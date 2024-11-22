@@ -3,3 +3,12 @@
 
 
 Utilitzar Espectrograma (utilitzar la llibreria Librosa), manera de representar la musica en una imatge. Conté frequencies per identificar els sons. Mirar si la informacio ens dona alguna pista del tipus de musica, fer BoW
+
+PREGUNTES SETMANA 1:
+- Carregar les dades
+- Codi per tractar-les
+- Extracció de característiques amb librosa
+- Preprocessar les dades: 
+    - Normalitzar les dades
+    - Eliminació de soroll
+    - Divisió del dataset en train i test
