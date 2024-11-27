@@ -15,22 +15,31 @@ optimitzarem (serà més ràpid) el temps de processament
 #???????????????? TAMBIEN PODRIAMOS USAR __PYCACHE__ -> EVITAMOS RECOMPILAR CODIGO QUE SE MATIENE
 import os
 import pandas as pd
+import numpy as np
 import pickle
+from sklearn.preprocessing import LabelEncoder
+import cv2
 
 class DataLoader:
-    def __init__(self, cache_dir="cache_data"):
-        self.cache_dir = cache_dir
-
-    def load_csv(self, csv_path:str) -> pd.DataFrame:
+    def __init__(self, cache_dir="cache_data", image_size=(128,128)):
         """
-        Carreguem l'arxiu ARXIUS i l'emmagatzema si no existeix.
+        cache_dir: directori on es guarden les dades
+        image_size: mida de les imatges perque totes siguin uniformes abans de procesarles
+        """
+        self.cache_dir = cache_dir
+        self.image_size = image_size
+
+    def load_csv(self, csv_path:str, target_column:str) -> pd.DataFrame:
+        """
+        Carreguem arxiu csv, l'emmagatzema si no existeix i separa les caracteristiques (X) i etiquetes (Y).
+        Returns: X, y i els noms de les característiques. 
         """
         filename_cache = os.path.basename(csv_path).replace(".csv", ".pkl") # nomFitxer.pkl
         cache_path = os.path.join(self.cache_dir, filename_cache) # El path: /cache_data/nomFitxer.pkl
 
         #* Si el fitxer pickle ja existeix, el carreguem des del cache
         if os.path.exists(cache_path):
-            print(f"Carregant dades des de CACHÉ: {cache_path}")
+            print(f"Carregant dades des de caché: {cache_path}")
             with open(cache_path, "rb") as f: #! rb = read binary
                 df = pickle.load(f)
         
@@ -42,11 +51,51 @@ class DataLoader:
             with open(cache_path, "wb") as f: #! wb = write binary
                 pickle.dump(df, f)
             print(f"Dades cacheades en: {cache_path}")
-        
-        return df
-    
-    def load_wav():
-        pass
 
-    def load_img():
+        # Separem caracteristiques i etiquetes
+        X = df.drop(columns=[target_column])
+        y = df[target_column]
+
+        # Codificar etiquetes (string --> num | blues --> 0)
+        encoder = LabelEncoder()
+        y_encoded = encoder.fit_transform(y)
+
+        return X, y_encoded, encoder.classes_
+        
+    
+    def load_images(self, image_dir):
+        """
+        Carrega imatges des d'un directori i les transforma en matrius.
+        """
+        images = []
+        genres = []
+
+        for genre_folder in os.listdir(image_dir):
+            genre_path = os.path.join(image_dir, genre_folder)
+            if os.path.isdir(genre_path):
+                for img_file in os.listdir(genre_path):
+                    img_path = os.path.join(genre_path, img_file)
+
+                    # Llegir la imatge
+                    img = cv2.imread(img_path)
+                    if img is not None:
+                        img = cv2.resize(img, self.image_size)
+
+                        # Convertim a RGB
+                        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+                        images.append(img/255.0) # Normalitzar 
+                        genres.append(genre_folder)
+
+        # Convertir a Numpy
+        images = np.array(images, dtype='float32') 
+        genres = np.array(genres)
+
+        # Codificar etiquetes
+        encoder = LabelEncoder()
+        genres_encoded = encoder.fit_transform(genres)
+
+        return images, genres_encoded, encoder.classes_
+
+    def load_audios():
         pass
