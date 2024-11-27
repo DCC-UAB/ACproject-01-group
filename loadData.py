@@ -14,11 +14,10 @@ optimitzarem (serà més ràpid) el temps de processament
 
 #???????????????? TAMBIEN PODRIAMOS USAR __PYCACHE__ -> EVITAMOS RECOMPILAR CODIGO QUE SE MATIENE
 import os
-import pandas as pd
-import numpy as np
 import pickle
-from sklearn.preprocessing import LabelEncoder
+import pandas as pd
 import cv2
+import numpy as np
 
 class DataLoader:
     def __init__(self, cache_dir="cache_data", image_size=(128,128)):
@@ -29,10 +28,9 @@ class DataLoader:
         self.cache_dir = cache_dir
         self.image_size = image_size
 
-    def load_csv(self, csv_path:str, target_column:str) -> pd.DataFrame:
+    def load_csv(self, csv_path:str) -> pd.DataFrame:
         """
-        Carreguem arxiu csv, l'emmagatzema si no existeix i separa les caracteristiques (X) i etiquetes (Y).
-        Returns: X, y i els noms de les característiques. 
+        Carreguem arxiu csv i l'emmagatzema si no existeix 
         """
         filename_cache = os.path.basename(csv_path).replace(".csv", ".pkl") # nomFitxer.pkl
         cache_path = os.path.join(self.cache_dir, filename_cache) # El path: /cache_data/nomFitxer.pkl
@@ -52,15 +50,7 @@ class DataLoader:
                 pickle.dump(df, f)
             print(f"Dades cacheades en: {cache_path}")
 
-        # Separem caracteristiques i etiquetes
-        X = df.drop(columns=[target_column])
-        y = df[target_column]
-
-        # Codificar etiquetes (string --> num | blues --> 0)
-        encoder = LabelEncoder()
-        y_encoded = encoder.fit_transform(y)
-
-        return X, y_encoded, encoder.classes_
+        return df
         
     
     def load_images(self, image_dir):
@@ -91,11 +81,8 @@ class DataLoader:
         images = np.array(images, dtype='float32') 
         genres = np.array(genres)
 
-        # Codificar etiquetes
-        encoder = LabelEncoder()
-        genres_encoded = encoder.fit_transform(genres)
-
-        return images, genres_encoded, encoder.classes_
+        
+        return images, genres
 
     def load_audios():
         pass

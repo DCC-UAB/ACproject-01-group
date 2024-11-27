@@ -1,4 +1,5 @@
 from loadData import DataLoader
+from dataPreprocessor import DataPreprocessor
 
 def main():
 
@@ -14,13 +15,19 @@ def main():
     TARGET_COLUMN = "label" 
 
 
-    data_loader = DataLoader()
-    X_3s, y_3s, classes_3s = data_loader.load_csv(path_csv_3s, TARGET_COLUMN)
+    loader = DataLoader()
+    df_3s = loader.load_csv(path_csv_3s)
+    df_30s = loader.load_csv(path_csv_30s)
+    X_images, genres = loader.load_images(images_path)
+
+    data = DataPreprocessor()
+    X_3s, y_3s, classes_3s = data.preprocess_csv(df_3s, TARGET_COLUMN)
     print(f"CSV 3s carregat. Shape X: {X_3s.shape}, Num etiquetes: {len(classes_3s)}")
 
-    X_30s, y_30s, classes_30s = data_loader.load_csv(path_csv_30s, TARGET_COLUMN)
+    X_30s, y_30s, classes_30s = data.preprocess_csv(df_30s, TARGET_COLUMN)
+    print(f"CSV 30s carregat. Shape X: {X_30s.shape}, Num etiquetes: {len(classes_30s)}")
 
-    X_images, y_images, classes_images = data_loader.load_images(images_path)
+    y_images, classes_images = data.preprocess_images(genres)
     print(f"Imatges carregades. Shape X: {X_images.shape}, Num etiquetes: {len(classes_images)}")
     
 
