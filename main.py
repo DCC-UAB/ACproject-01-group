@@ -1,5 +1,24 @@
 from loadData import DataLoader
 from dataPreprocessor import DataPreprocessor
+import os
+
+def main():
+    #!!!! PONGO MI MAIN QUE SE QUE FUNCIONA CON EL LOAD.
+    print("--- CARREGAR DADES ---")
+    loader = DataLoader()
+    dataframe3 = loader.load_csv("data/features_3_sec.csv")
+    dataframe30 = loader.load_csv("data/features_30_sec.csv")
+    # print(dataframe.head())
+
+    DIR_IMAGES = "data/images_original"
+    genre_imgs = {} #??? hago un diccionario
+
+    for dir_genre in os.listdir(DIR_IMAGES):
+        genre_path = os.path.join(DIR_IMAGES, dir_genre)
+        genre_imgs[dir_genre] = loader.load_img(genre_path)
+
+
+
 
 def main():
 
