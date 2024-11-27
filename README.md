@@ -7,7 +7,7 @@ Utilitzar Espectrograma (utilitzar la llibreria Librosa), manera de representar 
 PREGUNTES SETMANA 1:
 - Carregar les dades
 - Codi per tractar-les
-- Extracció de característiques amb librosa
+- Extracció de característiques amb librosa  -> no cal, ja que tenim les imatges que representen els espectogrames.
 - Preprocessar les dades: 
     - Normalitzar les dades
     - Eliminació de soroll
