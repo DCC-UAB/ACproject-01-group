@@ -2,7 +2,7 @@ from loadData import DataLoader
 from dataPreprocessor import DataPreprocessor
 import os
 
-def main():
+def main1():
     #!!!! PONGO MI MAIN QUE SE QUE FUNCIONA CON EL LOAD.
     print("--- CARREGAR DADES ---")
     loader = DataLoader()
@@ -20,7 +20,7 @@ def main():
 
 
 
-def main():
+def main2():
 
     # Paths dels datasets
     #* poso els paths relatius pero si no funciona correctament podem posar el path complet URL (el del git)
@@ -51,4 +51,4 @@ def main():
     
 
 if __name__ == "__main__":
-    main()
+    main1() #! para que asi cree los pickle de las imagenes.
