@@ -3,50 +3,30 @@ from dataPreprocessor import DataPreprocessor
 import os
 import numpy as np
 
-def main1():
-    #!!!! PONGO MI MAIN QUE SE QUE FUNCIONA CON EL LOAD.
-    print("--- CARREGAR DADES ---")
-    loader = DataLoader()
-    dataframe3 = loader.load_csv("data/features_3_sec.csv")
-    dataframe30 = loader.load_csv("data/features_30_sec.csv")
-    # print(dataframe.head())
-
-    DIR_IMAGES = "data/images_original"
-    genre_imgs = {} #??? hago un diccionario
-
-    for dir_genre in os.listdir(DIR_IMAGES):
-        genre_path = os.path.join(DIR_IMAGES, dir_genre)
-        genre_imgs[dir_genre] = loader.load_img(genre_path)
-
-
-
-
-def main2():
-
-    # Paths dels datasets
-    #* poso els paths relatius pero si no funciona correctament podem posar el path complet URL (el del git)
-    path_csv_3s = r"data/features_3_sec.csv" 
-    path_csv_30s = r"data/features_30_sec.csv"
-    images_path = r"data/images_original"
-    audios_path = r"data/genres_original"
+def main():
+    PATH_CSV3 = r"data/features_3_sec.csv" 
+    PATH_CSV30 = r"data/features_30_sec.csv"
+    PATH_IMAGES = r"data/images_original"
+    PATH_AUDIOS = r"data/genres_original"
 
     # Definir columna que s'utilitzara com a variable de sortida (Y)--> conté els generes musicals
-    # La resta de columnes son les caracteristiques que el model utilitza com entrada (X)
     TARGET_COLUMN = "label" 
 
     print("--- CARREGAR DADES ---")
     loader = DataLoader()
-    df_3s = loader.load_csv(path_csv_3s)
-    df_30s = loader.load_csv(path_csv_30s)
-    #X_images, genres = loader.load_img(images_path)
+    df_3s = loader.load_csv(PATH_CSV3)
+    df_30s = loader.load_csv(PATH_CSV30)
+    # print(dataframe30.head())
+
     genre_imgs = {}
-    for dir_genre in os.listdir(images_path):
-        genre_path = os.path.join(images_path, dir_genre)
+    for dir_genre in os.listdir(PATH_IMAGES):
+        genre_path = os.path.join(PATH_IMAGES, dir_genre)
         genre_imgs[dir_genre] = loader.load_img(genre_path)
 
     genres = list(genre_imgs.keys())
     X_images = np.array([img for imgs in genre_imgs.values() for img in imgs.values()])
 
+    print("\n--- PRE-PROCESSAR ---")
     data = DataPreprocessor()
     X_3s, y_3s, classes_3s = data.preprocess_csv(df_3s, TARGET_COLUMN)
     X_3s_normalized = data.normalize_data(X_3s)
@@ -67,5 +47,4 @@ def main2():
     
 
 if __name__ == "__main__":
-    #main1() #! para que asi cree los pickle de las imagenes.
-    main2()
+    main()
