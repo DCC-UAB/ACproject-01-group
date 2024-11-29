@@ -16,7 +16,7 @@ PREGUNTES:
 - Com eliminem el soroll?
 
 
-TO DO SETMANA 2:
+TO DO SETMANA 2/3:
 - Optimització de les classes anteriorment fetes
 - Aplicació d'algoritmes (mostrar plots):
     - KNN
@@ -24,15 +24,16 @@ TO DO SETMANA 2:
     - Random Forest
     - Logistic Regression
     - Gradient Boosting
-    Gaussian NB
+    - Gaussian NB
     BERNOULI 
     MULTINOMIAL
     CATEGORICAL
-- Extreure conclusions
+- Extreure conclusions / Avaluació del model : accuracy, precision, F1-score, matriu confusio...
 - Provar amb imatges (un cop ha funcionat amb csv)
 
 PREGUNTES:
 - Amb quin models ens quedem?
 - Pq hi ha overfitting?
+- Rendiment
+- Pq aquest csv es millor que l'altre?
 ....
-
