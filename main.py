@@ -28,10 +28,10 @@ def main():
 
     print("\n--- PRE-PROCESSAR ---")
     data = DataPreprocessor()
-    X_3s, y_3s, classes_3s = data.preprocess_csv(df_3s, TARGET_COLUMN)
-    X_3s_normalized = data.normalize_data(X_3s)
-    X_3s_denoised = data.remove_noise(X_3s_normalized)
-    X_3s_train, X_3s_test, y_3s_train, y_3s_test = data.split_data(X_3s_denoised, y_3s)
+    data.preprocess_csv(df_3s, TARGET_COLUMN)
+    X_3s = data.normalize_data()
+    data.remove_noise(X_3s_normalized)
+    data.split_data(X_3s_denoised, y_3s)
     #print(f"CSV 3s carregat. Shape X: {X_3s.shape}, Num etiquetes: {len(classes_3s)}")
     print(f"CSV 3s carregat. Train shape: {X_3s_train.shape}, Test shape: {X_3s_test.shape}")
 

@@ -4,11 +4,20 @@
 
 Utilitzar Espectrograma (utilitzar la llibreria Librosa), manera de representar la musica en una imatge. Conté frequencies per identificar els sons. Mirar si la informacio ens dona alguna pista del tipus de musica, fer BoW
 
-PREGUNTES SETMANA 1:
-- Carregar les dades
-- Codi per tractar-les
-- Extracció de característiques amb librosa  -> no cal, ja que tenim les imatges que representen els espectogrames.
+TO DO SETMANA 1:
+- Carregar les dades ✅
+- Codi per tractar-les ✅
+¿? Extracció de característiques amb librosa  -> no cal, ja que tenim les imatges que representen els espectogrames. 
 - Preprocessar les dades: 
-    - Normalitzar les dades
-    - Eliminació de soroll
-    - Divisió del dataset en train i test
+    - Normalitzar les dades ✅
+    - Eliminació de soroll ✅
+    - Divisió del dataset en train i test ✅
+
+TO DO SETMANA 2:
+- Optimització de les classes anteriorment fetes
+- Aplicació d'algoritmes (mostrar plots):
+    - KNN
+    - SVM 
+    - Random Forest
+    - Logistic Regression
+    - Gradient Boosting

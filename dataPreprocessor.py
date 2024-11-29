@@ -12,21 +12,29 @@ import numpy as np
 
 
 class DataPreprocessor:
+    def __init__(self):
+        self.X = None
+        self.y = None
+        self.X_train = None
+        self.X_test = None
+        self.y_train = None 
+        self.y_test = None
+
     def preprocess_csv(self, df, target_column):
         """
         Separem característiques (X) i etiquetes (Y) d'un DataFrame i codifiquem les etiquetes.
         """
 
         # Separem caracteristiques i etiquetes
-        X = df.drop(columns=[target_column])
-        y = df[target_column]
+        self.X = df.drop(columns=[target_column])
+        self.y = df[target_column]
 
     
         # Codificar etiquetes (string --> num | blues --> 0)
         encoder = LabelEncoder()
-        y_encoded = encoder.fit_transform(y)
+        y_encoded = encoder.fit_transform(self.y)
 
-        return X, y_encoded, encoder.classes_
+        return y_encoded, encoder.classes_
         
 
     def preprocess_images(self, genres):
@@ -43,28 +51,26 @@ class DataPreprocessor:
     def preprocess_audio(self):
         pass
 
-    def normalize_data(self, X):
+    def normalize_data(self):
         """
         Normalitzem les dades utilitzant MinMaxScaler.
         """
         scaler = MinMaxScaler()
-        X_numeric = X.select_dtypes(include=[np.number])  # Selecciona només columnes numèriques
+        X_numeric = self.X.select_dtypes(include=[np.number])  # Selecciona només columnes numèriques
         X_normalized = scaler.fit_transform(X_numeric)
         X_normalized_df = pd.DataFrame(X_normalized, columns=X_numeric.columns)
         return X_normalized_df
     
-    def remove_noise(self, X, treshold=1e-6):
+    def remove_noise(self, treshold=1e-6):
         """
         Eliminem el soroll (valors molt petits) de les dades establint a 0 aquells valors que siguin menor que el llindar donat.
         """
-        X_cleaned = np.where(np.abs(X) < treshold, 0, X)
-        return X_cleaned
+        self.X = np.where(np.abs(X) < treshold, 0, self.X) # la X_cleaned = a la nostra X definitiva (posem self.x)
     
-    def split_data(self, X, y, test_size=0.2, random_state=42):
+    def split_data(self, test_size=0.2, random_state=42):
         """
         Divideix les dades en conjunt d'entrenament i test.
         """
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
-        return X_train, X_test, y_train, y_test
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=test_size, random_state=random_state)
     
     
