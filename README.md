@@ -12,6 +12,9 @@ TO DO SETMANA 1:
     - Normalitzar les dades ✅
     - Eliminació de soroll ✅
     - Divisió del dataset en train i test ✅
+PREGUNTES:
+- Com eliminem el soroll?
+
 
 TO DO SETMANA 2:
 - Optimització de les classes anteriorment fetes
@@ -21,3 +24,15 @@ TO DO SETMANA 2:
     - Random Forest
     - Logistic Regression
     - Gradient Boosting
+    Gaussian NB
+    BERNOULI 
+    MULTINOMIAL
+    CATEGORICAL
+- Extreure conclusions
+- Provar amb imatges (un cop ha funcionat amb csv)
+
+PREGUNTES:
+- Amb quin models ens quedem?
+- Pq hi ha overfitting?
+....
+
