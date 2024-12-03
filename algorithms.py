@@ -51,19 +51,19 @@ class Models:
         y_pred = model.predict(self._X_test)
         self._prediccions[model_name] = y_pred
     
-    def do_decision_tree(self, random_state=42):
+    def do_decision_tree(self, dataset_name, random_state=42):
         dtree = DecisionTreeClassifier(random_state=random_state)
-        filename = os.path.join(self._cache, 'DecisionTree.pkl')
+        filename = os.path.join(self._cache, f'DecisionTree_{dataset_name}.pkl')
         self.save_model('Decision Tree', dtree, filename)
     
-    def do_random_forest(self, n_estimators=100, random_state=42):
+    def do_random_forest(self, dataset_name, n_estimators=100, random_state=42):
         random_forest = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state)
-        filename = os.path.join(self._cache, 'RandomForest.pkl')
+        filename = os.path.join(self._cache, f'RandomForest_{dataset_name}.pkl')
         self.save_model('Random Forest', random_forest, filename)
 
-    def do_gradient_boosting(self, learning_rate=0.1, n_estimators=100, random_state=42):
+    def do_gradient_boosting(self, dataset_name,learning_rate=0.1, n_estimators=100, random_state=42):
         gb = GradientBoostingClassifier(learning_rate=learning_rate, n_estimators=n_estimators, random_state=random_state)
-        filename = os.path.join(self._cache, 'GradientBoosting.pkl')
+        filename = os.path.join(self._cache, f'GradientBoosting_{dataset_name}.pkl')
         self.save_model('Gradient Boosting', gb, filename)
 
     ######## METRIQUES
