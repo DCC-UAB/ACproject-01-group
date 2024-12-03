@@ -1,5 +1,6 @@
 from loadData import DataLoader
 from dataPreprocessor import DataPreprocessor
+from algorithms import Models
 import os
 import numpy as np
 
@@ -44,6 +45,23 @@ def main():
     # dataIMG = DataPreprocessor
     # y_images, classes_images = dataIMG.preprocess_images(genres)
     # print(f"Imatges carregades. Shape X: {X_images.shape}, Num etiquetes: {len(classes_images)}")
+
+    print("\n--- IMPLEMENTAR MODELS ---")
+    models3 = Models(data3.train_data, data3.train_labels, data3.test_data, data3.test_labels)
+
+    #* Entrenar els models
+    models3.do_decision_tree()
+    models3.do_random_forest()
+    models3.do_gradient_boosting()
+
+    #* Avaluar els models
+    models3.evaluate_model('Decision Tree', dataset_name="df_3s")
+    models3.evaluate_model('Random Forest', dataset_name="df_3s")
+    models3.evaluate_model('Gradient Boosting', dataset_name="df_3s")
+
+    # Crear i mostrar el dataframe amb les mètriques
+    metrics_df = models3.create_metrics_dataframe()
+    print(metrics_df)
     
 
 if __name__ == "__main__":

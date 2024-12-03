@@ -30,6 +30,17 @@ class DataPreprocessor:
         if self._X_test is None:
             raise ValueError("Les dades test encara no han estat generades. Crida a 'split_data()'")
         return self._X_test
+    @property
+    def test_labels(self):
+        if self._y_test is None:
+            raise ValueError("Les dades test encara no han estat generades. Crida a 'split_data()'")
+        return self._y_test
+    @property
+    def train_labels(self):
+        if self._y_train is None:
+            raise ValueError("Les dades train encara no han estat generades. Crida a 'split_data()'")
+        return self._y_train
+    
     
     def preprocess_csv(self, df:pd.DataFrame, target_column:str):
         """
