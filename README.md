@@ -4,7 +4,7 @@
 
 Utilitzar Espectrograma (utilitzar la llibreria Librosa), manera de representar la musica en una imatge. Conté frequencies per identificar els sons. Mirar si la informacio ens dona alguna pista del tipus de musica, fer BoW
 
-TO DO SETMANA 1:
+## TO DO SETMANA 1:
 - Carregar les dades ✅
 - Codi per tractar-les ✅
 ¿? Extracció de característiques amb librosa  -> no cal, ja que tenim les imatges que representen els espectogrames. 
@@ -12,28 +12,39 @@ TO DO SETMANA 1:
     - Normalitzar les dades ✅
     - Eliminació de soroll ✅
     - Divisió del dataset en train i test ✅
-PREGUNTES:
-- Com eliminem el soroll?
+
+### Preguntes:
+**Com eliminem el soroll?**
+
+**Alternatives al codi implementat**
+
+A l'hora de normalitzar les dades és podia haber implementat `from sklearn.preprocessing import Normalizer`
 
 
-TO DO SETMANA 2/3:
-- Optimització de les classes anteriorment fetes
+
+## TO DO SETMANA 2/3:
+- Optimització de les classes anteriorment fetes ✅
 - Aplicació d'algoritmes (mostrar plots):
     - KNN
     - SVM 
     - Random Forest ✅
     - Logistic Regression
-    - Gradient Boosting
+    - Gradient Boosting ✅
     - Gaussian NB
-    BERNOULI 
-    MULTINOMIAL
-    CATEGORICAL
-- Extreure conclusions / Avaluació del model : accuracy, precision, F1-score, matriu confusio...
+    - Bernoulli
+    - Multinomial
+    - Categorical
+- Extreure conclusions / Avaluació del model : accuracy, precision, F1-score, matriu confusio... ✅
 - Provar amb imatges (un cop ha funcionat amb csv)
 
-PREGUNTES:
-- Amb quin models ens quedem?
-- Pq hi ha overfitting?
-- Rendiment
-- Pq aquest csv es millor que l'altre?
+### Preguntes:
+**Amb quin models ens quedem?**
+
+
+**Per què hi ha overfitting?**
+
+
+**Avaluació de Rendiment**
+
+**Quin csv és millor que l'altre, per què?**
 ....
