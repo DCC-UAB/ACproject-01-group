@@ -59,9 +59,7 @@ def main():
     models3.evaluate_model('Random Forest', dataset_name="df_3s")
     models3.evaluate_model('Gradient Boosting', dataset_name="df_3s")
 
-    # Crear i mostrar el dataframe amb les mètriques
     metrics_df = models3.create_metrics_dataframe()
-    print(metrics_df)
     
 
 if __name__ == "__main__":
