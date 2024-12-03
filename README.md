@@ -21,7 +21,7 @@ TO DO SETMANA 2/3:
 - Aplicació d'algoritmes (mostrar plots):
     - KNN
     - SVM 
-    - Random Forest
+    - Random Forest ✅
     - Logistic Regression
     - Gradient Boosting
     - Gaussian NB
