@@ -23,27 +23,27 @@ def main():
         genre_path = os.path.join(PATH_IMAGES, dir_genre)
         genre_imgs[dir_genre] = loader.load_img(genre_path)
 
-    genres = list(genre_imgs.keys())
-    X_images = np.array([img for imgs in genre_imgs.values() for img in imgs.values()])
-
     print("\n--- PRE-PROCESSAR ---")
-    data = DataPreprocessor()
-    data.preprocess_csv(df_3s, TARGET_COLUMN)
-    X_3s = data.normalize_data()
-    data.remove_noise(X_3s_normalized)
-    data.split_data(X_3s_denoised, y_3s)
-    #print(f"CSV 3s carregat. Shape X: {X_3s.shape}, Num etiquetes: {len(classes_3s)}")
-    print(f"CSV 3s carregat. Train shape: {X_3s_train.shape}, Test shape: {X_3s_test.shape}")
+    data3 = DataPreprocessor()
+    data3.preprocess_csv(df_3s, TARGET_COLUMN) #??? valors encoded - no seria mejor de cada conjunto train i test
+    data3.normalize_data()
+    data3.remove_noise() #!!!! provar amb diferents thresholds, per decidir quin es el millor
+    data3.split_data()
+    print(f"CSV 3s carregat. Train shape: {data3.train_data.shape}, Test shape: {data3.test_data.shape}")
 
-    X_30s, y_30s, classes_30s = data.preprocess_csv(df_30s, TARGET_COLUMN)
-    X_30s_normalized = data.normalize_data(X_30s)
-    X_30s_denoised = data.remove_noise(X_30s_normalized)
-    X_30s_train, X_30s_test, y_30s_train, y_30s_test = data.split_data(X_30s_denoised, y_30s)
-    #print(f"CSV 30s carregat. Shape X: {X_30s.shape}, Num etiquetes: {len(classes_30s)}")
-    print(f"CSV 30s carregat. Train shape: {X_30s_train.shape}, Test shape: {X_30s_test.shape}")
+    data30 = DataPreprocessor()
+    data30.preprocess_csv(df_30s, TARGET_COLUMN)
+    data30.normalize_data()
+    data30.remove_noise()
+    data30.split_data()
+    print(f"CSV 30s carregat. Train shape: {data30.train_data.shape}, Test shape: {data30.test_data.shape}")
 
-    y_images, classes_images = data.preprocess_images(genres)
-    print(f"Imatges carregades. Shape X: {X_images.shape}, Num etiquetes: {len(classes_images)}")
+    #? creo que no esta bien hecho el preprocess para img
+    # genres = list(genre_imgs.keys())
+    # X_images = np.array([img for imgs in genre_imgs.values() for img in imgs.values()])
+    # dataIMG = DataPreprocessor
+    # y_images, classes_images = dataIMG.preprocess_images(genres)
+    # print(f"Imatges carregades. Shape X: {X_images.shape}, Num etiquetes: {len(classes_images)}")
     
 
 if __name__ == "__main__":
