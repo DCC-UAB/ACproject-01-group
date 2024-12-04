@@ -119,12 +119,39 @@ class Models:
             "F1-Score": f1
         })
 
-    def plot_metrics(self, csv_metrics):
-        df = pd.read_csv(csv_metrics)
-        algorithms = df['Algorisme']
+    def do_plot_metrics(self, metrics_filename, show=True):
+        #TODO: fer que indiqui cada model 
+        metrics_df = pd.read_csv(metrics_filename)
+        models = metrics_df["Algorisme"]
+        metrics = metrics_df[["Accuracy", "Precision", "F1-Score"]]
+        
+        # Crear el grafic de barres
+        fig, ax = plt.subplots(figsize=(10, 6))
+        bottom = None
+        colors = ["pink", "lightgreen", "lightblue"]  # Colores para cada métrica
 
-        for algorithm in algorithms:
-            df = df[df['Algorisme'] == algorithm]
-            
+        # Iterem sobre les metriques 
+        for idx, metric in enumerate(metrics.columns):
+            if bottom is None:
+                ax.bar(models, metrics[metric], label=metric, color=colors[idx])
+                bottom = metrics[metric]
+            else:
+                ax.bar(models, metrics[metric], bottom=bottom, label=metric, color=colors[idx])
+                bottom += metrics[metric]
 
+        ax.set_title("Comparació de Metriques dels MOdels", fontsize=16)
+        ax.set_xlabel("Models", fontsize=14)
+        ax.set_ylabel("Valor de Metriques", fontsize=14)
+        ax.legend(title="Metriques", fontsize=12)
+        ax.grid(axis="y", linestyle="--", alpha=0.7)
+
+        plt.tight_layout()
+        if show:
+            plt.show()
+        else:
+            plt.savefig("plot_metrics.png")
+            print("Grafic desat com plot_metrics.png'")
+
+
+    
 
