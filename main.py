@@ -17,12 +17,19 @@ def main():
     loader = DataLoader()
     df_3s = loader.load_csv(PATH_CSV3)
     df_30s = loader.load_csv(PATH_CSV30)
-    # print(dataframe30.head())
 
-    genre_imgs = {}
+    imgs_dict = {}
+    # Carregar les imatges dels directoris per genere
     for dir_genre in os.listdir(PATH_IMAGES):
         genre_path = os.path.join(PATH_IMAGES, dir_genre)
-        genre_imgs[dir_genre] = loader.load_img(genre_path)
+        imgs_dict[dir_genre] = loader.load_img(genre_path)
+
+    """
+    estructura del diccionari:
+    images = {
+    'pop': { 'pop00017.png': np.array(...), 'pop00018.png': np.array(...) },
+    'rock': { 'rock00021.png': np.array(...), 'rock00022.png': np.array(...) },}
+    """
 
     print("\n--- PRE-PROCESSAR ---")
     data3 = DataPreprocessor()
@@ -39,12 +46,13 @@ def main():
     data30.split_data()
     print(f"CSV 30s carregat. Train shape: {data30.train_data.shape}, Test shape: {data30.test_data.shape}")
 
-    #? creo que no esta bien hecho el preprocess para img
-    # genres = list(genre_imgs.keys())
-    # X_images = np.array([img for imgs in genre_imgs.values() for img in imgs.values()])
-    # dataIMG = DataPreprocessor
-    # y_images, classes_images = dataIMG.preprocess_images(genres)
-    # print(f"Imatges carregades. Shape X: {X_images.shape}, Num etiquetes: {len(classes_images)}")
+    dataIMG = DataPreprocessor()
+    dataIMG.preprocess_images(imgs_dict, (64,64))
+    dataIMG.remove_noise()
+    dataIMG.split_data()
+    X_images = dataIMG._X # imatges processades
+    y_labels = dataIMG._y # etiquetes codificades
+    print(f"IMAGES carregades. Train shape: {dataIMG.train_data.shape}, Test shape: {dataIMG.test_data.shape}")
 
     print("\n--- IMPLEMENTAR MODELS ---")
     models3 = Models(data3.train_data, data3.train_labels, data3.test_data, data3.test_labels)

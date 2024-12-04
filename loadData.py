@@ -77,5 +77,5 @@ class DataLoader:
             with open(cache_path, "wb") as f:
                 pickle.dump(images, f)
             print(f"{len(images)} imatges carregades desde {path_imgs}.")
-
+        
         return images

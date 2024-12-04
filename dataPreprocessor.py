@@ -8,6 +8,7 @@ from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
+from PIL import Image
 
 class DataPreprocessor:
     def __init__(self):
@@ -56,14 +57,37 @@ class DataPreprocessor:
         return y_encoded, self._encoder.classes_
         
 
-    def preprocess_images(self, genres:list):
+    def preprocess_images(self, images:dict, target_size:tuple):
         """
-        Codifiquem les etiquetes de les imatges.
-        """
-        # Codificar etiquetes
-        genres_encoded = self._encoder.fit_transform(genres)
+        Codifiquem les etiquetes de les imatges i obtenim els arrays numpys.
 
-        return genres_encoded, self._encoder.classes_
+        images: diccionari {nom_arxiu: numpy array de les imatges}
+        target_size: mida a la que volem redimensionar les imatges 
+
+        """
+        X = [] # guarda les imatges redimesionades
+        y = [] # guarda les etiquetes
+        for genre, image_dict in images.items():
+            # Iterem sobre cada arxiu de imatge dins d'un genere
+            for filename, img_array in image_dict.items():
+                # Redimensionem la imatge 
+                img = Image.fromarray(img_array)
+
+                # Redimensionar la imatge
+                img_resized = img.resize(target_size)
+                img_resized_array = np.array(img_resized) # Convertir a numpy
+
+                # Normalitzem la imatge
+                img_resized_array = img_resized_array / 255.0 
+
+                X.append(img_resized_array)
+                y.append(genre)
+        
+        self._X = np.array(X)
+        self._y = np.array(y)
+
+        # Codificar etiquetes
+        self._y = self._encoder.fit_transform(self._y)
 
     def preprocess_audio(self):
         pass
