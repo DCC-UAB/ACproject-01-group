@@ -28,7 +28,7 @@ A l'hora de normalitzar les dades és podia haber implementat `from sklearn.prep
     - KNN
     - SVM 
     - Random Forest ✅
-    - Logistic Regression
+    - Logistic Regression ✅
     - Gradient Boosting ✅
     - Gaussian NB
     - Bernoulli
