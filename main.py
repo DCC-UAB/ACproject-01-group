@@ -58,35 +58,37 @@ def main():
     models3 = Models(data3.train_data, data3.train_labels, data3.test_data, data3.test_labels)
     dataset_name = 'df_3s'
     #* Entrenar els models
-    models3.do_decision_tree(dataset_name)
-    models3.do_random_forest(dataset_name)
-    models3.do_gradient_boosting(dataset_name)
+    # models3.do_decision_tree(dataset_name)
+    # models3.do_random_forest(dataset_name)
+    # models3.do_gradient_boosting(dataset_name)
+    models3.do_logistic_regression(dataset_name)
 
     #* Avaluar els models
-    models3.evaluate_model('Decision Tree', dataset_name)
-    models3.evaluate_model('Random Forest', dataset_name)
-    models3.evaluate_model('Gradient Boosting', dataset_name)
+    # models3.evaluate_model('Decision Tree', dataset_name)
+    # models3.evaluate_model('Random Forest', dataset_name)
+    # models3.evaluate_model('Gradient Boosting', dataset_name)
+    models3.evaluate_model('Logistic Regression', dataset_name)
 
     metrics3_df = models3.create_metrics_dataframe()
 
 
-    models30 = Models(data30.train_data, data30.train_labels, data30.test_data, data30.test_labels)
-    dataset_name = 'df_30s'
-    #* Entrenar els models
-    models30.do_decision_tree(dataset_name)
-    models30.do_random_forest(dataset_name)
-    models30.do_gradient_boosting(dataset_name)
+    # models30 = Models(data30.train_data, data30.train_labels, data30.test_data, data30.test_labels)
+    # dataset_name = 'df_30s'
+    # #* Entrenar els models
+    # models30.do_decision_tree(dataset_name)
+    # models30.do_random_forest(dataset_name)
+    # models30.do_gradient_boosting(dataset_name)
 
-    #* Avaluar els models
-    models30.evaluate_model('Decision Tree', dataset_name)
-    models30.evaluate_model('Random Forest', dataset_name)
-    models30.evaluate_model('Gradient Boosting', dataset_name)
+    # #* Avaluar els models
+    # models30.evaluate_model('Decision Tree', dataset_name)
+    # models30.evaluate_model('Random Forest', dataset_name)
+    # models30.evaluate_model('Gradient Boosting', dataset_name)
     
-    metrics30_df = models30.create_metrics_dataframe()
+    # metrics30_df = models30.create_metrics_dataframe()
 
     #* FEM UN MERGE PER TENIR UN CSV UNIC DE LES DADES DE 3 I 30S
-    merged_df = pd.concat([metrics3_df, metrics30_df], ignore_index=True)
-    merged_df.to_csv('metrics.csv', index=False)
+    # merged_df = pd.concat([metrics3_df, metrics30_df], ignore_index=True)
+    # merged_df.to_csv('metrics.csv', index=False)
 
 if __name__ == "__main__":
     main()

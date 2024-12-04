@@ -5,6 +5,7 @@ FUNCIÓ PRINCIPAL:
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, precision_score, f1_score, confusion_matrix
+from sklearn.linear_model import LogisticRegression
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -68,7 +69,11 @@ class Models:
         filename = os.path.join(self._cache, f'GradientBoosting_{dataset_name}.pkl')
         self.save_model('Gradient Boosting', gb, filename)
 
-    
+    def do_logistic_regression(self, dataset_name:str, C=1.0,solver='liblinear', max_iter=5000, penalty='l2', random_state=42):
+        logistic_regression = LogisticRegression(C=1, solver='liblinear', max_iter=5000, penalty='l2', random_state=42)
+        filename = os.path.join(self._cache, f'LogisticRegression{dataset_name}.pkl')
+        self.save_model('Logistic Regression', logistic_regression, filename)
+        
     ######## METRIQUES
     def do_confusion_matrix(self, cm:object, model_name:str, dataset_name:str, dir='confusion_matrixs', show=False):
         """Visualitzar la matriu de confusió."""
@@ -113,3 +118,13 @@ class Models:
             "Precision": precision,
             "F1-Score": f1
         })
+
+    def plot_metrics(self, csv_metrics):
+        df = pd.read_csv(csv_metrics)
+        algorithms = df['Algorisme']
+
+        for algorithm in algorithms:
+            df = df[df['Algorisme'] == algorithm]
+            
+
+
