@@ -6,7 +6,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, precision_score, f1_score, confusion_matrix
 from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import GaussianNB, BernoulliNB
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -79,6 +79,11 @@ class Models:
         gnb = GaussianNB()
         filename = os.path.join(self._cache, f'GaussianNB_{dataset_name}.pkl')
         self.save_model('Gaussian NB', gnb, filename)
+
+    def do_bernoulli_naive_bayes(self, dataset_name:str, alpha=1.0, binarize=0):
+        bnb = BernoulliNB(alpha=alpha, binarize=binarize)
+        filename = os.path.join(self._cache, f'BernoulliNB_{dataset_name}.pkl')
+        self.save_model('Bernoulli NB', bnb, filename)
 
     ######## METRIQUES
     def do_confusion_matrix(self, cm:object, model_name:str, dataset_name:str, dir='confusion_matrixs', show=False):

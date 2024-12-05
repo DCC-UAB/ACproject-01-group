@@ -31,7 +31,7 @@ A l'hora de normalitzar les dades és podia haber implementat `from sklearn.prep
     - Logistic Regression ✅
     - Gradient Boosting ✅
     - Gaussian NB ✅
-    - Bernoulli
+    - Bernoulli ✅
     - Multinomial
     - Categorical
 - Extreure conclusions / Avaluació del model : accuracy, precision, F1-score, matriu confusio... ✅
