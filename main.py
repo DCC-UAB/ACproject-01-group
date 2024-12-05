@@ -58,9 +58,9 @@ def main():
     models3 = Models(data3.train_data, data3.train_labels, data3.test_data, data3.test_labels)
     dataset_name = 'df_3s'
     #* Entrenar els models
-    # models3.do_decision_tree(dataset_name)
-    # models3.do_random_forest(dataset_name)
-    # models3.do_gradient_boosting(dataset_name)
+    #models3.do_decision_tree(dataset_name)
+    #models3.do_random_forest(dataset_name)
+    #models3.do_gradient_boosting(dataset_name)
     models3.do_logistic_regression(dataset_name)
     models3.do_gaussian_naive_bayes(dataset_name)
 
@@ -77,19 +77,24 @@ def main():
     models3.do_plot_metrics('metrics.csv')
 
 
-    # models30 = Models(data30.train_data, data30.train_labels, data30.test_data, data30.test_labels)
-    # dataset_name = 'df_30s'
+    models30 = Models(data30.train_data, data30.train_labels, data30.test_data, data30.test_labels)
+    dataset_name = 'df_30s'
     # #* Entrenar els models
     # models30.do_decision_tree(dataset_name)
     # models30.do_random_forest(dataset_name)
     # models30.do_gradient_boosting(dataset_name)
+    models30.do_logistic_regression(dataset_name)
+    models30.do_gaussian_naive_bayes(dataset_name)
 
     # #* Avaluar els models
     # models30.evaluate_model('Decision Tree', dataset_name)
     # models30.evaluate_model('Random Forest', dataset_name)
     # models30.evaluate_model('Gradient Boosting', dataset_name)
+    models30.evaluate_model('Logistic Regression', dataset_name)
+    models30.evaluate_model('Gaussian NB', dataset_name)
     
-    # metrics30_df = models30.create_metrics_dataframe()
+    metrics30_df = models30.create_metrics_dataframe()
+    models30.do_plot_metrics('metrics.csv')
 
     #* FEM UN MERGE PER TENIR UN CSV UNIC DE LES DADES DE 3 I 30S
     # merged_df = pd.concat([metrics3_df, metrics30_df], ignore_index=True)

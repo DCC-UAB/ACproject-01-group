@@ -139,17 +139,17 @@ class Models:
         bar_width = 0.1
         x = range(n_models)
 
-        colors = ["pink", "green", "lightblue"]  # Colors per cada metrica
+        colors = ["pink", "lightgreen", "lightblue"]  # Colors per cada metrica
 
         # Dibuixem les barres per cada metrica
         for idx, metric in enumerate(metrics.columns):
-            if bottom is None:
-                ax.bar(models, metrics[metric], label=metric, color=colors[idx])
-                bottom = metrics[metric]
-            else:
-                ax.bar(models, metrics[metric], bottom=bottom, label=metric, color=colors[idx])
-                bottom += metrics[metric]
-
+            bar_positions = [pos + idx * bar_width for pos in x]  # Desplazar les posicions pq quadri
+            ax.bar(bar_positions, metrics[metric], width=bar_width, label=metric, color=colors[idx])
+        
+        # Ajustar les posicions en l'eix de les X perque esten centrades
+        ax.set_xticks([pos + bar_width * (n_metrics - 1) / 2 for pos in x])
+        ax.set_xticklabels(models)
+        
         ax.set_title("Comparació de Metriques dels Models", fontsize=16)
         ax.set_xlabel("Models", fontsize=14)
         ax.set_ylabel("Valor de Metriques", fontsize=14)
@@ -157,11 +157,9 @@ class Models:
         ax.grid(axis="y", linestyle="--", alpha=0.7)
 
         plt.tight_layout()
+
         if show:
             plt.show()
-        else:
-            plt.savefig("plot_metrics.png")
-            print("Grafic desat com plot_metrics.png'")
 
     
 

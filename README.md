@@ -30,7 +30,7 @@ A l'hora de normalitzar les dades és podia haber implementat `from sklearn.prep
     - Random Forest ✅
     - Logistic Regression ✅
     - Gradient Boosting ✅
-    - Gaussian NB
+    - Gaussian NB ✅
     - Bernoulli
     - Multinomial
     - Categorical
