@@ -6,6 +6,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, precision_score, f1_score, confusion_matrix
 from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -71,9 +72,14 @@ class Models:
 
     def do_logistic_regression(self, dataset_name:str, C=1.0,solver='liblinear', max_iter=5000, penalty='l2', random_state=42):
         logistic_regression = LogisticRegression(C=1, solver='liblinear', max_iter=5000, penalty='l2', random_state=42)
-        filename = os.path.join(self._cache, f'LogisticRegression{dataset_name}.pkl')
+        filename = os.path.join(self._cache, f'LogisticRegression_{dataset_name}.pkl')
         self.save_model('Logistic Regression', logistic_regression, filename)
-        
+    
+    def do_gaussian_naive_bayes(self, dataset_name:str):
+        gnb = GaussianNB()
+        filename = os.path.join(self._cache, f'GaussianNB_{dataset_name}.pkl')
+        self.save_model('Gaussian NB', gnb, filename)
+
     ######## METRIQUES
     def do_confusion_matrix(self, cm:object, model_name:str, dataset_name:str, dir='confusion_matrixs', show=False):
         """Visualitzar la matriu de confusió."""
@@ -120,17 +126,22 @@ class Models:
         })
 
     def do_plot_metrics(self, metrics_filename, show=True):
-        #TODO: fer que indiqui cada model 
         metrics_df = pd.read_csv(metrics_filename)
         models = metrics_df["Algorisme"]
         metrics = metrics_df[["Accuracy", "Precision", "F1-Score"]]
         
         # Crear el grafic de barres
         fig, ax = plt.subplots(figsize=(10, 6))
-        bottom = None
-        colors = ["pink", "lightgreen", "lightblue"]  # Colores para cada métrica
+        n_models = len(models)
+        n_metrics = len(metrics.columns)
 
-        # Iterem sobre les metriques 
+        # Configrar les posicions de les barres
+        bar_width = 0.1
+        x = range(n_models)
+
+        colors = ["pink", "green", "lightblue"]  # Colors per cada metrica
+
+        # Dibuixem les barres per cada metrica
         for idx, metric in enumerate(metrics.columns):
             if bottom is None:
                 ax.bar(models, metrics[metric], label=metric, color=colors[idx])
@@ -139,7 +150,7 @@ class Models:
                 ax.bar(models, metrics[metric], bottom=bottom, label=metric, color=colors[idx])
                 bottom += metrics[metric]
 
-        ax.set_title("Comparació de Metriques dels MOdels", fontsize=16)
+        ax.set_title("Comparació de Metriques dels Models", fontsize=16)
         ax.set_xlabel("Models", fontsize=14)
         ax.set_ylabel("Valor de Metriques", fontsize=14)
         ax.legend(title="Metriques", fontsize=12)
@@ -151,6 +162,8 @@ class Models:
         else:
             plt.savefig("plot_metrics.png")
             print("Grafic desat com plot_metrics.png'")
+
+    
 
 
     
