@@ -4,6 +4,20 @@ from algorithms import Models
 import os
 import pandas as pd
 
+def get_models(model:object) -> dict:
+        return {
+        'KNN': model.do_knn,
+        'SVM': model.do_svm,
+        'Decision Tree': model.do_decision_tree,
+        'Random Forest': model.do_random_forest,
+        'Gradient Boosting': model.do_gradient_boosting,
+        'Logistic Regression': model.do_logistic_regression,
+        'Gaussian NB': model.do_gaussian_naive_bayes,
+        'Bernoulli NB': model.do_bernoulli_naive_bayes,
+        'Multinomial NB': model.do_multinomial_nb,
+        #'Categorical NB': model.do_categorical_nb
+        }
+
 def main():
     PATH_CSV3 = r"data/features_3_sec.csv" 
     PATH_CSV30 = r"data/features_30_sec.csv"
@@ -57,64 +71,25 @@ def main():
     print("\n--- IMPLEMENTAR MODELS ---")
     models3 = Models(data3.train_data, data3.train_labels, data3.test_data, data3.test_labels)
     dataset_name = 'df_3s'
-    # Entrenar els models
-    models3.do_knn(dataset_name)
-    models3.do_svm(dataset_name)
-    models3.do_decision_tree(dataset_name)
-    models3.do_random_forest(dataset_name)
-    models3.do_gradient_boosting(dataset_name)
-    models3.do_logistic_regression(dataset_name)
-    models3.do_gaussian_naive_bayes(dataset_name)
-    models3.do_bernoulli_naive_bayes(dataset_name)
-    models3.do_multinomial_nb(dataset_name)
-    #! models3.do_categorical_nb(dataset_name)
+    MODELS3_DICT = get_models(models3)
 
-    # Avaluar els models
-    models3.evaluate_model('KNN', dataset_name)
-    models3.evaluate_model('SVM', dataset_name)
-    models3.evaluate_model('Decision Tree', dataset_name)
-    models3.evaluate_model('Random Forest', dataset_name)
-    models3.evaluate_model('Gradient Boosting', dataset_name)
-    models3.evaluate_model('Logistic Regression', dataset_name)
-    models3.evaluate_model('Gaussian NB', dataset_name)
-    models3.evaluate_model('Bernoulli NB', dataset_name)
-    models3.evaluate_model('Multinomial NB', dataset_name)
-    #! models3.evaluate_model('Categorical NB', dataset_name)
+    for model_str, model_train in MODELS3_DICT.items():
+        model_train(dataset_name)
+        models3.evaluate_model(model_str, dataset_name)
 
     metrics3_df = models3.create_metrics_dataframe()
-
-    models3.do_plot_metrics('metrics.csv')
-
+    # models3.do_plot_metrics('metrics.csv')
 
     models30 = Models(data30.train_data, data30.train_labels, data30.test_data, data30.test_labels)
     dataset_name = 'df_30s'
-    # Entrenar els models
-    models30.do_knn(dataset_name)
-    models30.do_svm(dataset_name)
-    models30.do_decision_tree(dataset_name)
-    models30.do_random_forest(dataset_name)
-    models30.do_gradient_boosting(dataset_name)
-    models30.do_logistic_regression(dataset_name)
-    models30.do_gaussian_naive_bayes(dataset_name)
-    models30.do_bernoulli_naive_bayes(dataset_name)
-    models30.do_multinomial_nb(dataset_name)
-    #! models30.do_categorical_nb(dataset_name)
-    
+    MODELS30_DICT = get_models(models30)
 
-    # Avaluar els models
-    models30.evaluate_model('KNN', dataset_name)
-    models30.evaluate_model('SVM', dataset_name)
-    models30.evaluate_model('Decision Tree', dataset_name)
-    models30.evaluate_model('Random Forest', dataset_name)
-    models30.evaluate_model('Gradient Boosting', dataset_name)
-    models30.evaluate_model('Logistic Regression', dataset_name)
-    models30.evaluate_model('Gaussian NB', dataset_name)
-    models30.evaluate_model('Bernoulli NB', dataset_name)
-    models30.evaluate_model('Multinomial NB', dataset_name)
-    #! models30.evaluate_model('Categorical NB', dataset_name)
-    
+    for model_str, model_train in MODELS30_DICT.items():
+        model_train(dataset_name)
+        models30.evaluate_model(model_str, dataset_name)
+
     metrics30_df = models30.create_metrics_dataframe()
-    models30.do_plot_metrics('metrics.csv')
+    # models30.do_plot_metrics('metrics.csv')
 
     #* FEM UN MERGE PER TENIR UN CSV UNIC DE LES DADES DE 3 I 30S
     merged_df = pd.concat([metrics3_df, metrics30_df], ignore_index=True)
