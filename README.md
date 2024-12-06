@@ -25,15 +25,15 @@ A l'hora de normalitzar les dades és podia haber implementat `from sklearn.prep
 ## TO DO SETMANA 2/3:
 - Optimització de les classes anteriorment fetes ✅
 - Aplicació d'algoritmes (mostrar plots):
-    - KNN
-    - SVM 
+    - KNN ✅
+    - SVM ✅
     - Random Forest ✅
     - Logistic Regression ✅
     - Gradient Boosting ✅
     - Gaussian NB ✅
     - Bernoulli ✅
-    - Multinomial
-    - Categorical
+    - Multinomial NB ✅
+    - Categorical NB ✅
 - Extreure conclusions / Avaluació del model : accuracy, precision, F1-score, matriu confusio... ✅
 - Provar amb imatges (un cop ha funcionat amb csv)
 

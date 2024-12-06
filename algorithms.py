@@ -2,11 +2,14 @@
 FUNCIÓ PRINCIPAL:
 
 """
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, precision_score, f1_score, confusion_matrix
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB, BernoulliNB
+from sklearn.naive_bayes import MultinomialNB, CategoricalNB
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -55,6 +58,16 @@ class Models:
     
 
     ######### ALGORISMES - MODELS
+    def do_knn(self, dataset_name:str, n_neighbors=5, weights='uniform', algorithm='auto'):
+        knn = KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights, algorithm=algorithm)
+        filename = os.path.join(self._cache, f'KNN_{dataset_name}.pkl')
+        self.save_model('KNN', knn, filename)
+
+    def do_svm(self, dataset_name:str, kernel='rbf', C=1.0, gamma='scale', random_state=None):
+        svm = SVC(kernel=kernel, C=C, gamma=gamma, random_state=random_state)
+        filename = os.path.join(self._cache, f'SVM_{dataset_name}.pkl')
+        self.save_model('SVM', svm, filename)
+
     def do_decision_tree(self, dataset_name:str, random_state=42):
         dtree = DecisionTreeClassifier(random_state=random_state)
         filename = os.path.join(self._cache, f'DecisionTree_{dataset_name}.pkl')
@@ -84,6 +97,16 @@ class Models:
         bnb = BernoulliNB(alpha=alpha, binarize=binarize)
         filename = os.path.join(self._cache, f'BernoulliNB_{dataset_name}.pkl')
         self.save_model('Bernoulli NB', bnb, filename)
+
+    def do_multinomial_nb(self, dataset_name: str, alpha=1.0):
+        multinomial_nb = MultinomialNB(alpha=alpha)
+        filename = os.path.join(self._cache, f'MultinomialNB_{dataset_name}.pkl')
+        self.save_model('Multinomial NB', multinomial_nb, filename)
+
+    def do_categorical_nb(self, dataset_name: str, alpha=1.0):
+        categorical_nb = CategoricalNB(alpha=alpha)
+        filename = os.path.join(self._cache, f'CategoricalNB_{dataset_name}.pkl')
+        self.save_model('Categorical NB', categorical_nb, filename)
 
     ######## METRIQUES
     def do_confusion_matrix(self, cm:object, model_name:str, dataset_name:str, dir='confusion_matrixs', show=False):
