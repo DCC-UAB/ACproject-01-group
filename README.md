@@ -4,6 +4,9 @@
 
 Utilitzar Espectrograma (utilitzar la llibreria Librosa), manera de representar la musica en una imatge. Conté frequencies per identificar els sons. Mirar si la informacio ens dona alguna pista del tipus de musica, fer BoW
 
+## REQUIREMENTS:
+S'ha de tenir instal·lada la versió de **scikit-learn 1.2.2**, per tal de que a l'utilitzar pickle funcioni correctament `pip install scikit-learn==1.2.2`
+
 ## TO DO SETMANA 1:
 - Carregar les dades ✅
 - Codi per tractar-les ✅

@@ -8,8 +8,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, precision_score, f1_score, confusion_matrix
 from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import GaussianNB, BernoulliNB
-from sklearn.naive_bayes import MultinomialNB, CategoricalNB
+from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB, CategoricalNB
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -123,7 +122,7 @@ class Models:
             os.makedirs(dir)
         output_filename = os.path.join(dir, f"{model_name}_{dataset_name}_confusion_matrix.png")
         plt.savefig(output_filename)
-        print(f"Matriu de confusió desada com a {output_filename}")
+        print(f"Matriu de confusió desada a {output_filename}")
 
         if show:
             plt.show()

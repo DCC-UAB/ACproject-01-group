@@ -67,7 +67,7 @@ def main():
     models3.do_gaussian_naive_bayes(dataset_name)
     models3.do_bernoulli_naive_bayes(dataset_name)
     models3.do_multinomial_nb(dataset_name)
-    models3.do_categorical_nb(dataset_name)
+    #! models3.do_categorical_nb(dataset_name)
 
     # Avaluar els models
     models3.evaluate_model('KNN', dataset_name)
@@ -79,7 +79,7 @@ def main():
     models3.evaluate_model('Gaussian NB', dataset_name)
     models3.evaluate_model('Bernoulli NB', dataset_name)
     models3.evaluate_model('Multinomial NB', dataset_name)
-    models3.evaluate_model('Categorical NB', dataset_name)
+    #! models3.evaluate_model('Categorical NB', dataset_name)
 
     metrics3_df = models3.create_metrics_dataframe()
 
@@ -98,27 +98,27 @@ def main():
     models30.do_gaussian_naive_bayes(dataset_name)
     models30.do_bernoulli_naive_bayes(dataset_name)
     models30.do_multinomial_nb(dataset_name)
-    models30.do_categorical_nb(dataset_name)
+    #! models30.do_categorical_nb(dataset_name)
     
 
     # Avaluar els models
-    models3.evaluate_model('KNN', dataset_name)
-    models3.evaluate_model('SVM', dataset_name)
+    models30.evaluate_model('KNN', dataset_name)
+    models30.evaluate_model('SVM', dataset_name)
     models30.evaluate_model('Decision Tree', dataset_name)
     models30.evaluate_model('Random Forest', dataset_name)
     models30.evaluate_model('Gradient Boosting', dataset_name)
     models30.evaluate_model('Logistic Regression', dataset_name)
     models30.evaluate_model('Gaussian NB', dataset_name)
     models30.evaluate_model('Bernoulli NB', dataset_name)
-    models3.evaluate_model('Multinomial NB', dataset_name)
-    models3.evaluate_model('Categorical NB', dataset_name)
+    models30.evaluate_model('Multinomial NB', dataset_name)
+    #! models30.evaluate_model('Categorical NB', dataset_name)
     
-    # metrics30_df = models30.create_metrics_dataframe()
-    # models30.do_plot_metrics('metrics.csv')
+    metrics30_df = models30.create_metrics_dataframe()
+    models30.do_plot_metrics('metrics.csv')
 
     #* FEM UN MERGE PER TENIR UN CSV UNIC DE LES DADES DE 3 I 30S
-    # merged_df = pd.concat([metrics3_df, metrics30_df], ignore_index=True)
-    # merged_df.to_csv('metrics.csv', index=False)
+    merged_df = pd.concat([metrics3_df, metrics30_df], ignore_index=True)
+    merged_df.to_csv('metrics.csv', index=False)
 
 if __name__ == "__main__":
     main()
