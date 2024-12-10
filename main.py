@@ -78,7 +78,7 @@ def main():
         models3.evaluate_model(model_str, dataset_name)
 
     metrics3_df = models3.create_metrics_dataframe()
-    models3.do_plot_metrics('metrics.csv')
+    #models3.do_plot_metrics('metrics.csv')
 
     models30 = Models(data30.train_data, data30.train_labels, data30.test_data, data30.test_labels)
     dataset_name = 'df_30s'
@@ -89,7 +89,7 @@ def main():
         models30.evaluate_model(model_str, dataset_name)
 
     metrics30_df = models30.create_metrics_dataframe()
-    models30.do_plot_metrics('metrics.csv')
+    #models30.do_plot_metrics('metrics.csv')
 
     #* FEM UN MERGE PER TENIR UN CSV UNIC DE LES DADES DE 3 I 30S
     merged_df = pd.concat([metrics3_df, metrics30_df], ignore_index=True)

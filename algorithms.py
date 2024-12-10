@@ -10,10 +10,14 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, precision_score, f1_score, confusion_matrix
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB, CategoricalNB
+from sklearn.preprocessing import OrdinalEncoder
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os, pickle
+import numpy as np
+from sklearn.metrics import roc_curve, auc
+from sklearn.preprocessing import label_binarize
 
 class Models:
     def __init__(self, X_train, y_train, X_test, y_test) -> None:
@@ -103,10 +107,27 @@ class Models:
         filename = os.path.join(self._cache, f'MultinomialNB_{dataset_name}.pkl')
         self.save_model('Multinomial NB', multinomial_nb, filename)
 
-    def do_categorical_nb(self, dataset_name: str, alpha=1.0):
-        categorical_nb = CategoricalNB(alpha=alpha)
+    '''def do_categorical_nb(self, dataset_name: str):
+        categorical_nb = CategoricalNB()
+
+        # Codificar características como categorías, con 'handle_unknown' correctamente configurado
+        encoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
+
+        # Ajustar el codificador en el conjunto de entrenamiento y luego transformar ambos conjuntos
+        self._X_train = encoder.fit_transform(self._X_train)
+        self._X_test = encoder.transform(self._X_test)
+
+        # Asegurarse de que no haya valores negativos
+        self._X_train = np.maximum(self._X_train, 0)
+        self._X_test = np.maximum(self._X_test, 0)
+
+        # Verifica que los índices en _X_test sean válidos dentro de las categorías de _X_train
+        num_categories = len(encoder.categories_)
+        self._X_test = np.minimum(self._X_test, num_categories - 1)  # Limitar a las categorías conocidas
+
         filename = os.path.join(self._cache, f'CategoricalNB_{dataset_name}.pkl')
-        self.save_model('Categorical NB', categorical_nb, filename)
+        self.save_model('Categorical NB', categorical_nb, filename)'''
+
 
     ######## METRIQUES
     def do_confusion_matrix(self, cm:object, model_name:str, dataset_name:str, dir='confusion_matrixs', show=False):
@@ -188,6 +209,32 @@ class Models:
 
         if show:
             plt.show()
+    
+
+    def plot_roc_curve(self, fpr, tpr, roc_auc, model_name):
+        """Genera la curva ROC."""
+        plt.figure(figsize=(10, 6))
+        plt.plot(fpr, tpr, color='skyblue', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
+        plt.plot([0, 1], [0, 1], color='pink', linestyle='--')  # línea diagonal
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title(f'Receiver Operating Characteristic - {model_name}')
+        plt.legend(loc='lower right')
+        plt.show()
+
+def generate_roc_curve(self, model, X_test, y_test, model_name):
+    """Calcula y genera la curva ROC per un modelo."""
+    # Predicción de probabilidades (utiliza 'predict_proba' si el modelo lo soporta)
+    y_prob = model.predict_proba(X_test)[:, 1]  # Usamos la probabilidad para la clase positiva
+
+    # Cálculo de la curva ROC
+    fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+    roc_auc = auc(fpr, tpr)  # Cálculo del AUC
+
+    # Graficar la curva ROC
+    self.plot_roc_curve(fpr, tpr, roc_auc, model_name)
 
     
 
