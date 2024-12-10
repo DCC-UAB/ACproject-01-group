@@ -1,6 +1,7 @@
 """
 FUNCIÓ PRINCIPAL:
-
+Aquest script serveix per descriure els diferents algoritmes per al nostre model. 
+A més d'implementar diferents metodes per visualitzar els nostres resultats. 
 """
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
