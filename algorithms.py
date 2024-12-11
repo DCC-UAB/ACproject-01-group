@@ -108,18 +108,24 @@ class Models:
 
 
     ######## METRIQUES
-    def do_confusion_matrix(self, cm:object, model_name:str, dataset_name:str, dir='confusion_matrixs', show=False):
+    def do_confusion_matrix(self, cm:object, model_name:str, dataset_name:str, labels:list, dir='confusion_matrixs', show=False):
         """Visualitzar la matriu de confusió."""
         plt.figure(figsize=(8, 6))
-        sns.heatmap(cm, annot=True, fmt=".2f", cmap="Blues")
+        
+        # Definim els "eixos" amb NOM dels labels
+        if labels:
+            sns.heatmap(cm, annot=True, fmt=".2f", cmap="Blues", xticklabels=labels, yticklabels=labels)
+        else:
+            sns.heatmap(cm, annot=True, fmt=".2f", cmap="Blues")
+        
         plt.title(f"Matriu de Confusió - {model_name} - {dataset_name}")
         plt.xlabel("Predicció")
         plt.ylabel("Realitat")
 
-        #* Desar la matriu com a imatge
         # Si el directori no existeix, es crea
         if not os.path.exists(dir):
             os.makedirs(dir)
+        
         output_filename = os.path.join(dir, f"{model_name}_{dataset_name}_confusion_matrix.png")
         plt.savefig(output_filename)
         print(f"Matriu de confusió desada a {output_filename}")
@@ -127,7 +133,7 @@ class Models:
         if show:
             plt.show()
 
-    def evaluate_model(self, model_name:str, dataset_name:str):
+    def evaluate_model(self, model_name:str, dataset_name:str, labels:list):
         """Avalua un model determinat i l'afegeix a la llista per crear posteriorment el dataset"""
         if model_name not in self._prediccions:
             raise ValueError(f"El model '{model_name}' no es troba en el diccionari.")
@@ -141,7 +147,7 @@ class Models:
         cm = confusion_matrix(self._y_test, prediction, normalize='true')
 
         # Visualitzar la matriu de confusió
-        self.do_confusion_matrix(cm, model_name, dataset_name)
+        self.do_confusion_matrix(cm, model_name, dataset_name, labels)
 
         # Afegir resultats al registre
         self._metrics.append({

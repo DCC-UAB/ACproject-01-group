@@ -73,20 +73,23 @@ def main():
     models3 = Models(data3.train_data, data3.train_labels, data3.test_data, data3.test_labels)
     dataset_name = 'df_3s'
     MODELS3_DICT = get_models(models3)
+    LABELS = data3.get_labels()
 
+    #* Entrenem cada model
     for model_str, model_train in MODELS3_DICT.items():
-        model_train(dataset_name)
-        models3.evaluate_model(model_str, dataset_name)
+        model_train(dataset_name) 
+        models3.evaluate_model(model_str, dataset_name, LABELS)
 
     metrics3_df = models3.create_metrics_dataframe()
     #models3.do_plot_metrics('metrics.csv')
     
+    """ NO FUNCIONA
     model_file = os.path.join(models3._cache, f"{model_str.replace(' ', '')}_{dataset_name}.pkl")
     if os.path.exists(model_file):
         with open(model_file, 'rb') as f:
             model = pickle.load(f)
         models3.generate_roc_curve(models3.generate_roc_curve(model, data3.test_data, data3.test_labels, model_str))
-
+    """
 
     models30 = Models(data30.train_data, data30.train_labels, data30.test_data, data30.test_labels)
     dataset_name = 'df_30s'
@@ -94,7 +97,7 @@ def main():
 
     for model_str, model_train in MODELS30_DICT.items():
         model_train(dataset_name)
-        models30.evaluate_model(model_str, dataset_name)
+        models30.evaluate_model(model_str, dataset_name, LABELS)
 
     metrics30_df = models30.create_metrics_dataframe()
     #models30.do_plot_metrics('metrics.csv')
