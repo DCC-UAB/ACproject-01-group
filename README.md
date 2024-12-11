@@ -36,7 +36,6 @@ A l'hora de normalitzar les dades és podia haber implementat `from sklearn.prep
     - Gaussian NB ✅
     - Bernoulli ✅
     - Multinomial NB ✅
-    - Categorical NB ✅
 - Extreure conclusions / Avaluació del model : accuracy, precision, F1-score, matriu confusio... ✅
 - Provar amb imatges (un cop ha funcionat amb csv)
 

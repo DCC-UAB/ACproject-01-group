@@ -24,19 +24,16 @@ def main():
     PATH_IMAGES = r"data/images_original"
     PATH_AUDIOS = r"data/genres_original"
 
-    # Definir columna que s'utilitzara com a variable de sortida (Y)--> conté els generes musicals
-    TARGET_COLUMN = "label" 
-
     print("--- CARREGAR DADES ---")
     loader = DataLoader()
     df_3s = loader.load_csv(PATH_CSV3)
     df_30s = loader.load_csv(PATH_CSV30)
 
-    imgs_dict = {}
+    genre_imgs = {}
     # Carregar les imatges dels directoris per genere
     for dir_genre in os.listdir(PATH_IMAGES):
         genre_path = os.path.join(PATH_IMAGES, dir_genre)
-        imgs_dict[dir_genre] = loader.load_img(genre_path)
+        genre_imgs[dir_genre] = loader.load_img(genre_path)
 
     """
     estructura del diccionari:
@@ -47,26 +44,30 @@ def main():
 
     print("\n--- PRE-PROCESSAR ---")
     data3 = DataPreprocessor()
-    data3.preprocess_csv(df_3s, TARGET_COLUMN) #??? valors encoded - no seria mejor de cada conjunto train i test
-    data3.normalize_data()
-    data3.remove_noise() #!!!! provar amb diferents thresholds, per decidir quin es el millor
+    data3.preprocess_csv(df_3s)
     data3.split_data()
+    data3.normalize_data()
+    data3.plot_features('data3_features.png')
+    # data3.remove_noise()   #!!!! provar amb diferents thresholds, per decidir quin es el millor
     print(f"CSV 3s carregat. Train shape: {data3.train_data.shape}, Test shape: {data3.test_data.shape}")
 
     data30 = DataPreprocessor()
-    data30.preprocess_csv(df_30s, TARGET_COLUMN)
-    data30.normalize_data()
-    data30.remove_noise()
+    data30.preprocess_csv(df_30s)
     data30.split_data()
+    data30.normalize_data()
+    data30.plot_features('data30_features.png')
+    # data30.remove_noise()
     print(f"CSV 30s carregat. Train shape: {data30.train_data.shape}, Test shape: {data30.test_data.shape}")
 
     dataIMG = DataPreprocessor()
-    dataIMG.preprocess_images(imgs_dict, (64,64))
+    dataIMG.preprocess_images(genre_imgs)
     dataIMG.remove_noise()
     dataIMG.split_data()
     X_images = dataIMG._X # imatges processades
     y_labels = dataIMG._y # etiquetes codificades
     print(f"IMAGES carregades. Train shape: {dataIMG.train_data.shape}, Test shape: {dataIMG.test_data.shape}")
+
+
 
     print("\n--- IMPLEMENTAR MODELS ---")
     models3 = Models(data3.train_data, data3.train_labels, data3.test_data, data3.test_labels)
@@ -79,11 +80,13 @@ def main():
 
     metrics3_df = models3.create_metrics_dataframe()
     #models3.do_plot_metrics('metrics.csv')
+    
     model_file = os.path.join(models3._cache, f"{model_str.replace(' ', '')}_{dataset_name}.pkl")
     if os.path.exists(model_file):
         with open(model_file, 'rb') as f:
             model = pickle.load(f)
         models3.generate_roc_curve(models3.generate_roc_curve(model, data3.test_data, data3.test_labels, model_str))
+
 
     models30 = Models(data30.train_data, data30.train_labels, data30.test_data, data30.test_labels)
     dataset_name = 'df_30s'
@@ -95,6 +98,7 @@ def main():
 
     metrics30_df = models30.create_metrics_dataframe()
     #models30.do_plot_metrics('metrics.csv')
+    
     model_file = os.path.join(models30._cache, f"{model_str.replace(' ', '')}_{dataset_name}.pkl")
     if os.path.exists(model_file):
         with open(model_file, 'rb') as f:
