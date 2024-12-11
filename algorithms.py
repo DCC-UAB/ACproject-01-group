@@ -9,8 +9,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, precision_score, f1_score, confusion_matrix
 from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB, CategoricalNB
-from sklearn.preprocessing import OrdinalEncoder
+from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -107,27 +106,6 @@ class Models:
         filename = os.path.join(self._cache, f'MultinomialNB_{dataset_name}.pkl')
         self.save_model('Multinomial NB', multinomial_nb, filename)
 
-    '''def do_categorical_nb(self, dataset_name: str):
-        categorical_nb = CategoricalNB()
-
-        # Codificar características como categorías, con 'handle_unknown' correctamente configurado
-        encoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
-
-        # Ajustar el codificador en el conjunto de entrenamiento y luego transformar ambos conjuntos
-        self._X_train = encoder.fit_transform(self._X_train)
-        self._X_test = encoder.transform(self._X_test)
-
-        # Asegurarse de que no haya valores negativos
-        self._X_train = np.maximum(self._X_train, 0)
-        self._X_test = np.maximum(self._X_test, 0)
-
-        # Verifica que los índices en _X_test sean válidos dentro de las categorías de _X_train
-        num_categories = len(encoder.categories_)
-        self._X_test = np.minimum(self._X_test, num_categories - 1)  # Limitar a las categorías conocidas
-
-        filename = os.path.join(self._cache, f'CategoricalNB_{dataset_name}.pkl')
-        self.save_model('Categorical NB', categorical_nb, filename)'''
-
 
     ######## METRIQUES
     def do_confusion_matrix(self, cm:object, model_name:str, dataset_name:str, dir='confusion_matrixs', show=False):
@@ -174,70 +152,63 @@ class Models:
             "F1-Score": f1
         })
 
-    def do_plot_metrics(self, metrics_filename, show=True):
-        metrics_df = pd.read_csv(metrics_filename)
-        models = metrics_df["Algorisme"]
-        metrics = metrics_df[["Accuracy", "Precision", "F1-Score"]]
+    def generate_roc_curve(model, X_test, y_test, model_name, output_path="roc_curves"):
+        """Genera y guarda la curva ROC para un modelo de clasificación.
+        Compatible con modelos que tienen o no 'predict_proba'."""
         
-        # Crear el grafic de barres
-        fig, ax = plt.subplots(figsize=(10, 6))
-        n_models = len(models)
-        n_metrics = len(metrics.columns)
+        # Verificar si las etiquetas son continuas
+        if np.issubdtype(np.array(y_test).dtype, np.floating):
+            print("Error: Las etiquetas son continuas. ROC no es aplicable.")
+            return  # Detener el proceso si las etiquetas son continuas
 
-        # Configrar les posicions de les barres
-        bar_width = 0.1
-        x = range(n_models)
+        # Binarizar etiquetas para problemas multiclase
+        y_test = np.array(y_test).flatten()
+        n_classes = len(set(y_test))
+        y_test_binarized = label_binarize(y_test, classes=list(range(n_classes)))
 
-        colors = ["pink", "lightgreen", "lightblue"]  # Colors per cada metrica
+        try:
+            y_prob = model.predict_proba(X_test)
+        except AttributeError:
+            print(f"{model_name} no tiene 'predict_proba'. Usando 'predict' en su lugar.")
+            y_prob = model.predict(X_test)
+            y_prob = np.expand_dims(y_prob, axis=1)
 
-        # Dibuixem les barres per cada metrica
-        for idx, metric in enumerate(metrics.columns):
-            bar_positions = [pos + idx * bar_width for pos in x]  # Desplazar les posicions pq quadri
-            ax.bar(bar_positions, metrics[metric], width=bar_width, label=metric, color=colors[idx])
+        fpr = dict()
+        tpr = dict()
+        roc_auc = dict()
+
+        if y_prob.ndim > 1:  
+            for i in range(n_classes):
+                fpr[i], tpr[i], _ = roc_curve(y_test_binarized[:, i], y_prob[:, i])
+                roc_auc[i] = auc(fpr[i], tpr[i])
+
+            fpr_micro, tpr_micro, _ = roc_curve(y_test_binarized.ravel(), y_prob.ravel())
+            roc_auc_micro = auc(fpr_micro, tpr_micro)
+
+            plt.figure(figsize=(10, 8))
+            for i in range(n_classes):
+                plt.plot(fpr[i], tpr[i], label=f"Clase {i} (AUC = {roc_auc[i]:.2f})")
+            
+            plt.plot(fpr_micro, tpr_micro, label=f"Micro promedio (AUC = {roc_auc_micro:.2f})", linestyle='--', color='red')
+
+        else:
+            fpr[0], tpr[0], _ = roc_curve(y_test_binarized[:, 0], y_prob)
+            roc_auc[0] = auc(fpr[0], tpr[0])
+
+            plt.figure(figsize=(10, 8))
+            plt.plot(fpr[0], tpr[0], label=f"Clase 0 (AUC = {roc_auc[0]:.2f})")
         
-        # Ajustar les posicions en l'eix de les X perque esten centrades
-        ax.set_xticks([pos + bar_width * (n_metrics - 1) / 2 for pos in x])
-        ax.set_xticklabels(models)
-        
-        ax.set_title("Comparació de Metriques dels Models", fontsize=16)
-        ax.set_xlabel("Models", fontsize=14)
-        ax.set_ylabel("Valor de Metriques", fontsize=14)
-        ax.legend(title="Metriques", fontsize=12)
-        ax.grid(axis="y", linestyle="--", alpha=0.7)
-
-        plt.tight_layout()
-
-        if show:
-            plt.show()
-    
-
-    def plot_roc_curve(self, fpr, tpr, roc_auc, model_name):
-        """Genera la curva ROC."""
-        plt.figure(figsize=(10, 6))
-        plt.plot(fpr, tpr, color='skyblue', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
-        plt.plot([0, 1], [0, 1], color='pink', linestyle='--')  # línea diagonal
+        plt.plot([0, 1], [0, 1], 'k--', label="Aleatoria (AUC = 0.5)")
         plt.xlim([0.0, 1.0])
         plt.ylim([0.0, 1.05])
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title(f'Receiver Operating Characteristic - {model_name}')
-        plt.legend(loc='lower right')
-        plt.show()
+        plt.xlabel("Tasa de Falsos Positivos (FPR)")
+        plt.ylabel("Tasa de Verdaderos Positivos (TPR)")
+        plt.title(f"Curva ROC - {model_name}")
+        plt.legend(loc="lower right")
 
-def generate_roc_curve(self, model, X_test, y_test, model_name):
-    """Calcula y genera la curva ROC per un modelo."""
-    # Predicción de probabilidades (utiliza 'predict_proba' si el modelo lo soporta)
-    y_prob = model.predict_proba(X_test)[:, 1]  # Usamos la probabilidad para la clase positiva
+        output_file = os.path.join(output_path, f"roc_curve_{model_name}.pkl")
+        with open(output_file, 'wb') as f:
+            pickle.dump(plt, f)
+        plt.close()
 
-    # Cálculo de la curva ROC
-    fpr, tpr, thresholds = roc_curve(y_test, y_prob)
-    roc_auc = auc(fpr, tpr)  # Cálculo del AUC
-
-    # Graficar la curva ROC
-    self.plot_roc_curve(fpr, tpr, roc_auc, model_name)
-
-    
-
-
-    
-
+        print(f"Curva ROC guardada en {output_file}")

@@ -3,6 +3,7 @@ from dataPreprocessor import DataPreprocessor
 from algorithms import Models
 import os
 import pandas as pd
+import pickle
 
 def get_models(model:object) -> dict:
         return {
@@ -15,7 +16,6 @@ def get_models(model:object) -> dict:
         'Gaussian NB': model.do_gaussian_naive_bayes,
         'Bernoulli NB': model.do_bernoulli_naive_bayes,
         'Multinomial NB': model.do_multinomial_nb,
-        #'Categorical NB': model.do_categorical_nb
         }
 
 def main():
@@ -79,6 +79,11 @@ def main():
 
     metrics3_df = models3.create_metrics_dataframe()
     #models3.do_plot_metrics('metrics.csv')
+    model_file = os.path.join(models3._cache, f"{model_str.replace(' ', '')}_{dataset_name}.pkl")
+    if os.path.exists(model_file):
+        with open(model_file, 'rb') as f:
+            model = pickle.load(f)
+        models3.generate_roc_curve(models3.generate_roc_curve(model, data3.test_data, data3.test_labels, model_str))
 
     models30 = Models(data30.train_data, data30.train_labels, data30.test_data, data30.test_labels)
     dataset_name = 'df_30s'
@@ -90,6 +95,11 @@ def main():
 
     metrics30_df = models30.create_metrics_dataframe()
     #models30.do_plot_metrics('metrics.csv')
+    model_file = os.path.join(models30._cache, f"{model_str.replace(' ', '')}_{dataset_name}.pkl")
+    if os.path.exists(model_file):
+        with open(model_file, 'rb') as f:
+            model = pickle.load(f)
+        models30.generate_roc_curve(model, data30.test_data, data30.test_labels, model_str)
 
     #* FEM UN MERGE PER TENIR UN CSV UNIC DE LES DADES DE 3 I 30S
     merged_df = pd.concat([metrics3_df, metrics30_df], ignore_index=True)
