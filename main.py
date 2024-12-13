@@ -26,7 +26,9 @@ def main():
     PATH_IMAGES = r"data/images_original"
     PATH_AUDIOS = r"data/genres_original"
 
-    print("--- CARREGAR DADES ---")
+    print(
+        "----------------------------- CARREGAR DADES ---------------------------------"
+    )
     loader = DataLoader()
     df_3s = loader.load_csv(PATH_CSV3)
     df_30s = loader.load_csv(PATH_CSV30)
@@ -44,7 +46,9 @@ def main():
     'rock': { 'rock00021.png': np.array(...), 'rock00022.png': np.array(...) },}
     """
 
-    print("\n--- PRE-PROCESSAR ---")
+    print(
+        "\n--------------------------- PRE-PROCESSAR ---------------------------------"
+    )
     data3 = DataPreprocessor()
     data3.preprocess_csv(df_3s)
     data3.split_data()
@@ -69,6 +73,13 @@ def main():
     dataIMG.preprocess_images(genre_imgs)
     dataIMG.remove_noise()
     dataIMG.split_data()
+
+    # # Hem de redimensionar l'array de les imatges perque Machine Learning models accepts 2D arrays
+    # num_samples_train = dataIMG.train_data.shape[0]
+    # num_samples_test = dataIMG.test_data.shape[0]
+    # dataIMG.train_data = dataIMG.train_data.reshape(num_samples_train, -1)
+    # dataIMG.test_data = dataIMG.test_data.reshape(num_samples_test, -1)
+
     X_images = dataIMG._X  # imatges processades
     y_labels = dataIMG._y  # etiquetes codificades
     print(
@@ -79,48 +90,51 @@ def main():
     models3 = Models(
         data3.train_data, data3.train_labels, data3.test_data, data3.test_labels
     )
-    #! DO MODELS AMB IMATGES
-    # dataset_name = "df_3s"
-    # MODELS3_DICT = get_models(models3)
-    # LABELS = data3.get_labels()
 
-    # # * Entrenem cada model
-    # for model_str, model_train in MODELS3_DICT.items():
-    #     model_train(dataset_name)
-    #     models3.evaluate_model(model_str, dataset_name, LABELS)
+    dataset_name = "df_3s"
+    MODELS3_DICT = get_models(models3)
+    LABELS = data3.get_labels()
+
+    # * Entrenem cada model
+    for model_str, model_train in MODELS3_DICT.items():
+        model_train(dataset_name)
+        models3.evaluate_model(model_str, dataset_name, LABELS)
 
     metrics3_df = models3.create_metrics_dataframe()
-    # models3.do_plot_metrics('metrics.csv')
+    models3.do_plot_metrics("metrics.csv", suffix="_3s")
 
     models30 = Models(
         data30.train_data, data30.train_labels, data30.test_data, data30.test_labels
     )
     dataset_name = "df_30s"
     MODELS30_DICT = get_models(models30)
+    LABELS = data30.get_labels()
 
     for model_str, model_train in MODELS30_DICT.items():
         model_train(dataset_name)
         models30.evaluate_model(model_str, dataset_name, LABELS)
 
     metrics30_df = models30.create_metrics_dataframe()
-    # models30.do_plot_metrics('metrics.csv')
+    models30.do_plot_metrics("metrics.csv", suffix="_30s")
 
-    print("\n--- IMPLEMENTAR MODELS AMB IMATGES ---")
-    modelsIMG = Models(
-        dataIMG.train_data, dataIMG.train_labels, dataIMG.test_data, dataIMG.test_labels
+    print(
+        "\n------------------------------ IMPLEMENTAR MODELS AMB IMATGES ---------------------------------"
     )
-    dataset_name = "images"
-    MODELSIMG_DICT = get_models(modelsIMG)
-    LABELS = dataIMG.get_labels()
+    # ! DO MODELS AMB IMATGES
+    # modelsIMG = Models(
+    #     dataIMG.train_data, dataIMG.train_labels, dataIMG.test_data, dataIMG.test_labels
+    # )
+    # dataset_name = "images"
+    # MODELSIMG_DICT = get_models(modelsIMG)
+    # LABELS = dataIMG.get_labels()
 
-    # Entrenar cada modelo con imágenes
-    for model_str, model_train in MODELSIMG_DICT.items():
-        print(f"Entrenant el model {model_str} amb les imatges...")
-        model_train(dataset_name)
-        modelsIMG.evaluate_model(model_str, dataset_name, LABELS)
+    # for model_str, model_train in MODELSIMG_DICT.items():
+    #     print(f"Entrenant el model {model_str} amb les imatges...")
+    #     model_train(dataset_name)
+    #     modelsIMG.evaluate_model(model_str, dataset_name, LABELS)
 
-    metricsIMG_df = modelsIMG.create_metrics_dataframe("metrics_images.csv")
-    print(f"Mètriques dels models amb imatges desades a 'metrics_images.csv'")
+    # metricsIMG_df = modelsIMG.create_metrics_dataframe("metrics_images.csv")
+    # print(f"Mètriques dels models amb imatges desades a 'metrics_images.csv'")
 
     # * FEM UN MERGE PER TENIR UN CSV UNIC DE LES DADES DE 3 I 30S
     merged_df = pd.concat([metrics3_df, metrics30_df], ignore_index=True)

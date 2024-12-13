@@ -203,7 +203,7 @@ class Models:
             }
         )
 
-    def do_plot_metrics(self, metrics_filename, show=True):
+    def do_plot_metrics(self, metrics_filename, suffix="", show=True):
         metrics_df = pd.read_csv(metrics_filename)
         models = metrics_df["Algorisme"]
         metrics = metrics_df[["Accuracy", "Precision", "F1-Score"]]
@@ -243,6 +243,15 @@ class Models:
         ax.grid(axis="y", linestyle="--", alpha=0.7)
 
         plt.tight_layout()
+
+        # Crear la carpeta si no existeix i guardar el gràfic
+        output_dir = "plot_metrics"
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+        output_path = os.path.join(output_dir, f"metrics_plot_{suffix}.png")
+
+        plt.savefig(output_path)
 
         if show:
             plt.show()
