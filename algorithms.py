@@ -63,6 +63,7 @@ class Models:
         y_pred = model.predict(self._X_test)
         self._prediccions[model_name] = y_pred
 
+
     ######### ALGORISMES - MODELS
     def do_knn(
         self, dataset_name: str, n_neighbors=5, weights="uniform", algorithm="auto"
@@ -203,6 +204,12 @@ class Models:
             }
         )
 
+        # Generar curva ROC
+        try:
+            self.plot_roc_curve(model_name, dataset_name, labels)
+        except ValueError as e:
+            print(f"Error al generar la curva ROC para {model_name}: {e}")
+
     def do_plot_metrics(self, metrics_filename, suffix="", show=True):
         metrics_df = pd.read_csv(metrics_filename)
         models = metrics_df["Algorisme"]
@@ -249,9 +256,55 @@ class Models:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        output_path = os.path.join(output_dir, f"metrics_plot_{suffix}.png")
+        output_path = os.path.join(output_dir, f"metrics_plot{suffix}.png")
 
         plt.savefig(output_path)
 
         if show:
             plt.show()
+
+
+    def plot_roc_curve(self, model_name: str, dataset_name: str, labels: list):
+        """Generar la corba ROC per a un model determinat"""
+        if model_name not in self._prediccions:
+            raise ValueError(f"El model '{model_name}' no es troba en el diccionari.")
+
+        prediction = self._prediccions[model_name]
+
+        # Binaritzar les etiquetes de sortida per a la corba ROC
+        y_test_binarized = label_binarize(self._y_test, classes=labels)
+        n_classes = y_test_binarized.shape[1]
+
+        # Comprovar si la predicció és unidimensional (classificació binària)
+        if prediction.ndim == 1:
+            prediction = label_binarize(prediction, classes=labels)
+
+        # Calcular la corba ROC i l'àrea sota la corba (AUC) per a cada classe
+        fpr = dict()
+        tpr = dict()
+        roc_auc = dict()
+        for i in range(n_classes):
+            fpr[i], tpr[i], _ = roc_curve(y_test_binarized[:, i], prediction[:, i])
+            roc_auc[i] = auc(fpr[i], tpr[i])
+
+        # Dibuixar la corba ROC
+        plt.figure()
+        for i in range(n_classes):
+            plt.plot(fpr[i], tpr[i], label=f'Classe {labels[i]} (àrea = {roc_auc[i]:.2f})')
+
+        plt.plot([0, 1], [0, 1], 'k--')
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel('Taxa de Falsos Positius')
+        plt.ylabel('Taxa de Veritables Positius')
+        plt.title(f'Corba ROC - {model_name} - {dataset_name}')
+        plt.legend(loc='lower right')
+
+        # Desar el gràfic
+        output_dir = "roc_curves"
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        
+        output_path = os.path.join(output_dir, f"{model_name}_{dataset_name}_roc_curve.png")
+        plt.savefig(output_path)
+        print(f"Corba ROC desada a {output_path}")
