@@ -1,6 +1,7 @@
 from loadData import DataLoader
 from dataPreprocessor import DataPreprocessor
 from algorithms import Models
+from evaluateParams import HyperparameterEvaluator
 import os
 import pandas as pd
 
@@ -131,6 +132,70 @@ def main():
     print(
         "\n------------------------------ AJUSTAR HIPERPÀREMTRES ---------------------------------"
     )
+    PICKLE_DIR = "cache_data"
+    evaluator3 = HyperparameterEvaluator(PICKLE_DIR, data3.train_data, data3.train_labels)
+    evaluator30 = HyperparameterEvaluator(PICKLE_DIR, data30.train_data, data30.train_labels)
+    evaluatorIMG = HyperparameterEvaluator(PICKLE_DIR, dataIMG.train_data, dataIMG.train_labels)
+
+    # Definir hiperparàmetres per a cada model
+    param_grids3 = {
+        "Random Forest": ("RandomForest_df_3s.pkl", {
+            "n_estimators": [50, 100],
+            "max_depth": [2, 10, 20],
+            "min_samples_split": [2, 5]
+        }),
+        # "Gradient Boosting": ("GradientBoosting_df_3s.pkl", {
+        #     "learning_rate": [0.1, 0.2],
+        #     "n_estimators": [50, 100],
+        #     "max_depth": [3, 5]
+        # }),
+        "KNN": ("KNN_df_3s.pkl", {
+            "n_neighbors": [3, 5, 7, 9],
+            "weights": ["uniform", "distance"],
+            "algorithm": ["auto", "kd_tree"]
+        })
+    }
+
+    param_grids30 = {
+        "Random Forest": ("RandomForest_df_30s.pkl", {
+            "n_estimators": [50, 100],
+            "max_depth": [2, 10, 20],
+            "min_samples_split": [2, 5]
+        }),
+        # "Gradient Boosting": ("GradientBoosting_df_30s.pkl", {
+        #     "learning_rate": [0.1, 0.2],
+        #     "n_estimators": [50, 100],
+        #     "max_depth": [3, 5]
+        # }),
+        "KNN": ("KNN_df_30s.pkl", {
+            "n_neighbors": [3, 5, 7, 9],
+            "weights": ["uniform", "distance"],
+            "algorithm": ["auto", "kd_tree"]
+        })
+    }
+
+    param_gridsIMG = {
+        "Random Forest": ("RandomForest_images.pkl", {
+            "n_estimators": [50, 100],
+            "max_depth": [2, 10, 20],
+            "min_samples_split": [2, 5]
+        }),
+        # "Gradient Boosting": ("GradientBoosting_images.pkl", {
+        #     "learning_rate": [0.1, 0.2],
+        #     "n_estimators": [50, 100],
+        #     "max_depth": [3, 5]
+        # }),
+        "Logistic Regression": ("LogisticRegression_images.pkl", {
+            "C": [0.1, 1, 10],
+            "penalty": ["l1", "l2"],
+            "solver": ["liblinear"]
+        })
+    }
+
+    evaluator3.process_models(param_grids3, search_type="grid")
+    evaluator30.process_models(param_grids30, search_type="grid")
+    evaluatorIMG.process_models(param_gridsIMG, search_type="grid")
+
 
 if __name__ == "__main__":
     main()

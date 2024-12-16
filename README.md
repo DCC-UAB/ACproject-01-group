@@ -50,3 +50,9 @@ A l'hora de normalitzar les dades és podia haber implementat `from sklearn.prep
 
 **Quin csv és millor que l'altre, per què?**
 ....
+
+## TO DO SETMANA 4:
+- Implementació de models amb imatges ✅
+- Visualitzar ROC-Curve ✅
+- Jugar amb hiperparàmetres dels top3 millors models de cada "tipus" ✅
+- Finalitzar l'informe
