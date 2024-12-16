@@ -63,7 +63,6 @@ class Models:
         y_pred = model.predict(self._X_test)
         self._prediccions[model_name] = y_pred
 
-
     ######### ALGORISMES - MODELS
     def do_knn(
         self, dataset_name: str, n_neighbors=5, weights="uniform", algorithm="auto"
@@ -94,7 +93,7 @@ class Models:
         self.save_model("Random Forest", random_forest, filename)
 
     def do_gradient_boosting(
-        self, dataset_name: str, learning_rate=0.1, n_estimators=100, random_state=42
+        self, dataset_name: str, learning_rate=0.3, n_estimators=20, random_state=42
     ):
         gb = GradientBoostingClassifier(
             learning_rate=learning_rate,
@@ -263,7 +262,6 @@ class Models:
         if show:
             plt.show()
 
-
     def plot_roc_curve(self, model_name: str, dataset_name: str, labels: list):
         """Generar la corba ROC per a un model determinat"""
         if model_name not in self._prediccions:
@@ -290,21 +288,25 @@ class Models:
         # Dibuixar la corba ROC
         plt.figure()
         for i in range(n_classes):
-            plt.plot(fpr[i], tpr[i], label=f'Classe {labels[i]} (àrea = {roc_auc[i]:.2f})')
+            plt.plot(
+                fpr[i], tpr[i], label=f"Classe {labels[i]} (àrea = {roc_auc[i]:.2f})"
+            )
 
-        plt.plot([0, 1], [0, 1], 'k--')
+        plt.plot([0, 1], [0, 1], "k--")
         plt.xlim([0.0, 1.0])
         plt.ylim([0.0, 1.05])
-        plt.xlabel('Taxa de Falsos Positius')
-        plt.ylabel('Taxa de Veritables Positius')
-        plt.title(f'Corba ROC - {model_name} - {dataset_name}')
-        plt.legend(loc='lower right')
+        plt.xlabel("Taxa de Falsos Positius")
+        plt.ylabel("Taxa de Veritables Positius")
+        plt.title(f"Corba ROC - {model_name} - {dataset_name}")
+        plt.legend(loc="lower right")
 
         # Desar el gràfic
         output_dir = "roc_curves"
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-        
-        output_path = os.path.join(output_dir, f"{model_name}_{dataset_name}_roc_curve.png")
+
+        output_path = os.path.join(
+            output_dir, f"{model_name}_{dataset_name}_roc_curve.png"
+        )
         plt.savefig(output_path)
         print(f"Corba ROC desada a {output_path}")

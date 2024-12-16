@@ -12,7 +12,7 @@ def get_models(model: object) -> dict:
         "SVM": model.do_svm,
         "Decision Tree": model.do_decision_tree,
         "Random Forest": model.do_random_forest,
-        "Gradient Boosting": model.do_gradient_boosting,
+        # "Gradient Boosting": model.do_gradient_boosting, #! --> LO COMENTO PARA LAS IMAGES PQ TARDA MUCHO
         "Logistic Regression": model.do_logistic_regression,
         "Gaussian NB": model.do_gaussian_naive_bayes,
         "Bernoulli NB": model.do_bernoulli_naive_bayes,
@@ -74,11 +74,9 @@ def main():
     dataIMG.remove_noise()
     dataIMG.split_data()
 
-    # # Hem de redimensionar l'array de les imatges perque Machine Learning models accepts 2D arrays
-    # num_samples_train = dataIMG.train_data.shape[0]
-    # num_samples_test = dataIMG.test_data.shape[0]
-    # dataIMG.train_data = dataIMG.train_data.reshape(num_samples_train, -1)
-    # dataIMG.test_data = dataIMG.test_data.reshape(num_samples_test, -1)
+    # * Hem de redimensionar l'array de les imatges perque Machine Learning models accepts 2D arrays
+    dataIMG.train_data = dataIMG.train_data.reshape(dataIMG.train_data.shape[0], -1)
+    dataIMG.test_data = dataIMG.test_data.reshape(dataIMG.test_data.shape[0], -1)
 
     X_images = dataIMG._X  # imatges processades
     y_labels = dataIMG._y  # etiquetes codificades
@@ -101,7 +99,7 @@ def main():
         models3.evaluate_model(model_str, dataset_name, LABELS)
 
     metrics3_df = models3.create_metrics_dataframe()
-    models3.do_plot_metrics("metrics.csv", suffix="_3s")
+    # * models3.do_plot_metrics("metrics.csv", suffix="_3s") comento perque ja estan les imatges guardades
 
     models30 = Models(
         data30.train_data, data30.train_labels, data30.test_data, data30.test_labels
@@ -115,26 +113,28 @@ def main():
         models30.evaluate_model(model_str, dataset_name, LABELS)
 
     metrics30_df = models30.create_metrics_dataframe()
-    models30.do_plot_metrics("metrics.csv", suffix="_30s")
+    # * models30.do_plot_metrics("metrics.csv", suffix="_30s") comento perque ja estan les imatges guardades
 
     print(
         "\n------------------------------ IMPLEMENTAR MODELS AMB IMATGES ---------------------------------"
     )
-    # ! DO MODELS AMB IMATGES
-    # modelsIMG = Models(
-    #     dataIMG.train_data, dataIMG.train_labels, dataIMG.test_data, dataIMG.test_labels
-    # )
-    # dataset_name = "images"
-    # MODELSIMG_DICT = get_models(modelsIMG)
-    # LABELS = dataIMG.get_labels()
 
-    # for model_str, model_train in MODELSIMG_DICT.items():
-    #     print(f"Entrenant el model {model_str} amb les imatges...")
-    #     model_train(dataset_name)
-    #     modelsIMG.evaluate_model(model_str, dataset_name, LABELS)
+    modelsIMG = Models(
+        dataIMG.train_data, dataIMG.train_labels, dataIMG.test_data, dataIMG.test_labels
+    )
+    dataset_name = "images"
+    MODELSIMG_DICT = get_models(modelsIMG)
+    LABELS = dataIMG.get_labels()
 
-    # metricsIMG_df = modelsIMG.create_metrics_dataframe("metrics_images.csv")
-    # print(f"Mètriques dels models amb imatges desades a 'metrics_images.csv'")
+    for model_str, model_train in MODELSIMG_DICT.items():
+        print(f"Entrenant el model {model_str} amb les imatges...")
+        model_train(dataset_name)
+        modelsIMG.evaluate_model(model_str, dataset_name, LABELS)
+
+    metricsIMG_df = modelsIMG.create_metrics_dataframe("metrics_images.csv")
+    print(f"Mètriques dels models amb imatges desades a 'metrics_images.csv'")
+
+    modelsIMG.do_plot_metrics("metrics_images.csv")
 
     # * FEM UN MERGE PER TENIR UN CSV UNIC DE LES DADES DE 3 I 30S
     merged_df = pd.concat([metrics3_df, metrics30_df], ignore_index=True)
