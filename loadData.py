@@ -10,8 +10,6 @@ S'ha decidit utilitzar-ho, degut a que a l'estar tractant amb grans fitxers i va
 guardar-ho, per després carregar-ho sense necessitat de processar les dades des de cero repetitivament. D'aquesta manera,
 optimitzarem (serà més ràpid) el temps de processament 
 """
-
-#???????????????? TAMBIEN PODRIAMOS USAR __PYCACHE__ -> EVITAMOS RECOMPILAR CODIGO QUE SE MATIENE
 import os, pickle
 import pandas as pd
 from PIL import Image #? no se si funcionará bien como librosa (la hemos utilizado en otra asignatura: PSIV)

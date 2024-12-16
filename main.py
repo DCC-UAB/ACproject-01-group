@@ -3,7 +3,6 @@ from dataPreprocessor import DataPreprocessor
 from algorithms import Models
 import os
 import pandas as pd
-import pickle
 
 
 def get_models(model: object) -> dict:
@@ -12,7 +11,7 @@ def get_models(model: object) -> dict:
         "SVM": model.do_svm,
         "Decision Tree": model.do_decision_tree,
         "Random Forest": model.do_random_forest,
-        # "Gradient Boosting": model.do_gradient_boosting, #! --> LO COMENTO PARA LAS IMAGES PQ TARDA MUCHO
+        "Gradient Boosting": model.do_gradient_boosting, #! --> LO COMENTO PARA LAS IMAGES PQ TARDA MUCHO
         "Logistic Regression": model.do_logistic_regression,
         "Gaussian NB": model.do_gaussian_naive_bayes,
         "Bernoulli NB": model.do_bernoulli_naive_bayes,
@@ -55,9 +54,7 @@ def main():
     data3.normalize_data()
     data3.plot_features("data3_features.png")
     # data3.remove_noise()   #!!!! provar amb diferents thresholds, per decidir quin es el millor
-    print(
-        f"CSV 3s carregat. Train shape: {data3.train_data.shape}, Test shape: {data3.test_data.shape}"
-    )
+    print(f"CSV 3s carregat. Train shape: {data3.train_data.shape}, Test shape: {data3.test_data.shape}")
 
     data30 = DataPreprocessor()
     data30.preprocess_csv(df_30s)
@@ -65,9 +62,7 @@ def main():
     data30.normalize_data()
     data30.plot_features("data30_features.png")
     # data30.remove_noise()
-    print(
-        f"CSV 30s carregat. Train shape: {data30.train_data.shape}, Test shape: {data30.test_data.shape}"
-    )
+    print(f"CSV 30s carregat. Train shape: {data30.train_data.shape}, Test shape: {data30.test_data.shape}")
 
     dataIMG = DataPreprocessor()
     dataIMG.preprocess_images(genre_imgs)
@@ -80,14 +75,13 @@ def main():
 
     X_images = dataIMG._X  # imatges processades
     y_labels = dataIMG._y  # etiquetes codificades
-    print(
-        f"IMAGES carregades. Train shape: {dataIMG.train_data.shape}, Test shape: {dataIMG.test_data.shape}"
-    )
+    print(f"IMAGES carregades. Train shape: {dataIMG.train_data.shape}, Test shape: {dataIMG.test_data.shape}")
 
-    print("\n--- IMPLEMENTAR MODELS AMB CSV ---")
-    models3 = Models(
-        data3.train_data, data3.train_labels, data3.test_data, data3.test_labels
+    print(
+        "\n------------------------------ IMPLEMENTAR MODELS ---------------------------------"
     )
+    print("--- AMB CSV ---")
+    models3 = Models(data3.train_data, data3.train_labels, data3.test_data, data3.test_labels)
 
     dataset_name = "df_3s"
     MODELS3_DICT = get_models(models3)
@@ -99,11 +93,9 @@ def main():
         models3.evaluate_model(model_str, dataset_name, LABELS)
 
     metrics3_df = models3.create_metrics_dataframe()
-    # * models3.do_plot_metrics("metrics.csv", suffix="_3s") comento perque ja estan les imatges guardades
+    models3.do_plot_metrics(suffix="_3s")
 
-    models30 = Models(
-        data30.train_data, data30.train_labels, data30.test_data, data30.test_labels
-    )
+    models30 = Models(data30.train_data, data30.train_labels, data30.test_data, data30.test_labels)
     dataset_name = "df_30s"
     MODELS30_DICT = get_models(models30)
     LABELS = data30.get_labels()
@@ -113,15 +105,11 @@ def main():
         models30.evaluate_model(model_str, dataset_name, LABELS)
 
     metrics30_df = models30.create_metrics_dataframe()
-    # * models30.do_plot_metrics("metrics.csv", suffix="_30s") comento perque ja estan les imatges guardades
+    models30.do_plot_metrics(suffix="_30s")
 
-    print(
-        "\n------------------------------ IMPLEMENTAR MODELS AMB IMATGES ---------------------------------"
-    )
+    print("---\nAMB IMATGES ---")
 
-    modelsIMG = Models(
-        dataIMG.train_data, dataIMG.train_labels, dataIMG.test_data, dataIMG.test_labels
-    )
+    modelsIMG = Models(dataIMG.train_data, dataIMG.train_labels, dataIMG.test_data, dataIMG.test_labels)
     dataset_name = "images"
     MODELSIMG_DICT = get_models(modelsIMG)
     LABELS = dataIMG.get_labels()
@@ -134,12 +122,15 @@ def main():
     metricsIMG_df = modelsIMG.create_metrics_dataframe("metrics_images.csv")
     print(f"Mètriques dels models amb imatges desades a 'metrics_images.csv'")
 
-    modelsIMG.do_plot_metrics("metrics_images.csv")
+    modelsIMG.do_plot_metrics(suffix="images", metrics_filename="metrics_images.csv")
 
     # * FEM UN MERGE PER TENIR UN CSV UNIC DE LES DADES DE 3 I 30S
     merged_df = pd.concat([metrics3_df, metrics30_df], ignore_index=True)
     merged_df.to_csv("metrics.csv", index=False)
 
+    print(
+        "\n------------------------------ AJUSTAR HIPERPÀREMTRES ---------------------------------"
+    )
 
 if __name__ == "__main__":
     main()

@@ -4,7 +4,6 @@ Aquest script serveix per obtenir dades tant de les imatges, csv o audios.
 A més a més preprocessarem les dades del csv, normalitzant-les, eliminant el soroll i dividint en train i test.
 
 """
-
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 from sklearn.model_selection import train_test_split
 import pandas as pd
@@ -37,9 +36,7 @@ class DataPreprocessor:
         elif self._X_train is not None:
             return self._X_train
         else:
-            raise ValueError(
-                "Les dades train encara no han estat generades. Crida a 'split_data()'"
-            )
+            raise ValueError("Les dades train encara no han estat generades. Crida a 'split_data()'")
 
     # Setter per poder assignar nous valors a train_data
     @train_data.setter
@@ -53,9 +50,7 @@ class DataPreprocessor:
         elif self._X_test is not None:
             return self._X_test
         else:
-            raise ValueError(
-                "Les dades test encara no han estat generades. Crida a 'split_data()'"
-            )
+            raise ValueError("Les dades test encara no han estat generades. Crida a 'split_data()'")
 
     # Setter per poder assignar nous valors a test_data
     @test_data.setter
@@ -65,24 +60,18 @@ class DataPreprocessor:
     @property
     def test_labels(self):
         if self._y_test is None:
-            raise ValueError(
-                "Les dades test encara no han estat generades. Crida a 'split_data()'"
-            )
+            raise ValueError("Les dades test encara no han estat generades. Crida a 'split_data()'")
         return self._y_test
 
     @property
     def train_labels(self):
         if self._y_train is None:
-            raise ValueError(
-                "Les dades train encara no han estat generades. Crida a 'split_data()'"
-            )
+            raise ValueError("Les dades train encara no han estat generades. Crida a 'split_data()'")
         return self._y_train
 
     def get_labels(self) -> list:
         if self._y is None:
-            raise ValueError(
-                "Encara no s'ha preprocessat. Crida a 'preprocess_csv(df)'"
-            )
+            raise ValueError("Encara no s'ha preprocessat. Crida a 'preprocess_csv(df)'")
         return list(self._encoder.classes_)
 
     def preprocess_csv(self, df: pd.DataFrame) -> None:
@@ -136,9 +125,7 @@ class DataPreprocessor:
         """
         Divideix les dades en conjunt d'entrenament i test.
         """
-        self._X_train, self._X_test, self._y_train, self._y_test = train_test_split(
-            self._X, self._y, test_size=test_size, random_state=random_state
-        )
+        self._X_train, self._X_test, self._y_train, self._y_test = train_test_split(self._X, self._y, test_size=test_size, random_state=random_state)
 
         # Convertir a numpy
         self._X_train = np.asarray(self._X_train)
@@ -160,9 +147,7 @@ class DataPreprocessor:
         """
         Eliminem el soroll (valors molt petits) de les dades establint a 0 aquells valors que siguin menor que el llindar donat.
         """
-        self._X = np.where(
-            np.abs(self._X) < treshold, 0, self._X
-        )  # la X_cleaned = a la nostra X definitiva (posem self.x)
+        self._X = np.where(np.abs(self._X) < treshold, 0, self._X)  # la X_cleaned = a la nostra X definitiva (posem self.x)
 
     def plot_features(self, filename: str):
         """
@@ -170,9 +155,7 @@ class DataPreprocessor:
         """
         #! evitem sobreescriure si ja existeix
         if os.path.exists(filename):
-            print(
-                f"L'arxiu {filename} ja existeix existe, per tant, no es genera una imatge nova."
-            )
+            print(f"L'arxiu {filename} ja existeix, per tant, no es genera una imatge nova.")
             return
 
         num_features = self._X.shape[1]  # columnes

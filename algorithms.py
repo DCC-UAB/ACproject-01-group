@@ -28,9 +28,7 @@ class Models:
         self._y_test = y_test
 
         self._prediccions = {}  # ? {nom_model : predict}
-        self._metrics = (
-            []
-        )  # emmagatzema les mètriques de RENDIMENT dels models, per fer el dataframe
+        self._metrics = []  # emmagatzema les mètriques de RENDIMENT dels models, per fer el dataframe
         self._cache = "cache_data"
 
     ######### SAVE
@@ -64,18 +62,12 @@ class Models:
         self._prediccions[model_name] = y_pred
 
     ######### ALGORISMES - MODELS
-    def do_knn(
-        self, dataset_name: str, n_neighbors=5, weights="uniform", algorithm="auto"
-    ):
-        knn = KNeighborsClassifier(
-            n_neighbors=n_neighbors, weights=weights, algorithm=algorithm
-        )
+    def do_knn(self, dataset_name: str, n_neighbors=5, weights="uniform", algorithm="auto"):
+        knn = KNeighborsClassifier(n_neighbors=n_neighbors, weights=weights, algorithm=algorithm)
         filename = os.path.join(self._cache, f"KNN_{dataset_name}.pkl")
         self.save_model("KNN", knn, filename)
 
-    def do_svm(
-        self, dataset_name: str, kernel="rbf", C=1.0, gamma="scale", random_state=None
-    ):
+    def do_svm(self, dataset_name: str, kernel="rbf", C=1.0, gamma="scale", random_state=None):
         svm = SVC(kernel=kernel, C=C, gamma=gamma, random_state=random_state)
         filename = os.path.join(self._cache, f"SVM_{dataset_name}.pkl")
         self.save_model("SVM", svm, filename)
@@ -86,35 +78,17 @@ class Models:
         self.save_model("Decision Tree", dtree, filename)
 
     def do_random_forest(self, dataset_name: str, n_estimators=100, random_state=42):
-        random_forest = RandomForestClassifier(
-            n_estimators=n_estimators, random_state=random_state
-        )
+        random_forest = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state)
         filename = os.path.join(self._cache, f"RandomForest_{dataset_name}.pkl")
         self.save_model("Random Forest", random_forest, filename)
 
-    def do_gradient_boosting(
-        self, dataset_name: str, learning_rate=0.3, n_estimators=20, random_state=42
-    ):
-        gb = GradientBoostingClassifier(
-            learning_rate=learning_rate,
-            n_estimators=n_estimators,
-            random_state=random_state,
-        )
+    def do_gradient_boosting(self, dataset_name: str, learning_rate=0.3, n_estimators=20, random_state=42):
+        gb = GradientBoostingClassifier(learning_rate=learning_rate, n_estimators=n_estimators, random_state=random_state)
         filename = os.path.join(self._cache, f"GradientBoosting_{dataset_name}.pkl")
         self.save_model("Gradient Boosting", gb, filename)
 
-    def do_logistic_regression(
-        self,
-        dataset_name: str,
-        C=1.0,
-        solver="liblinear",
-        max_iter=5000,
-        penalty="l2",
-        random_state=42,
-    ):
-        logistic_regression = LogisticRegression(
-            C=1, solver="liblinear", max_iter=5000, penalty="l2", random_state=42
-        )
+    def do_logistic_regression(self, dataset_name: str, C=1.0, solver="liblinear", max_iter=5000, penalty="l2", random_state=42,):
+        logistic_regression = LogisticRegression(C=C, solver=solver, max_iter=max_iter, penalty=penalty, random_state=random_state)
         filename = os.path.join(self._cache, f"LogisticRegression_{dataset_name}.pkl")
         self.save_model("Logistic Regression", logistic_regression, filename)
 
@@ -134,28 +108,13 @@ class Models:
         self.save_model("Multinomial NB", multinomial_nb, filename)
 
     ######## METRIQUES
-    def do_confusion_matrix(
-        self,
-        cm: object,
-        model_name: str,
-        dataset_name: str,
-        labels: list,
-        dir="confusion_matrixs",
-        show=False,
-    ):
+    def do_confusion_matrix(self, cm: object, model_name: str, dataset_name: str, labels: list, dir="confusion_matrixs", show=False) -> None:
         """Visualitzar la matriu de confusió."""
         plt.figure(figsize=(8, 6))
 
         # Definim els "eixos" amb NOM dels labels
         if labels:
-            sns.heatmap(
-                cm,
-                annot=True,
-                fmt=".2f",
-                cmap="Blues",
-                xticklabels=labels,
-                yticklabels=labels,
-            )
+            sns.heatmap(cm, annot=True, fmt=".2f", cmap="Blues", xticklabels=labels, yticklabels=labels)
         else:
             sns.heatmap(cm, annot=True, fmt=".2f", cmap="Blues")
 
@@ -167,16 +126,15 @@ class Models:
         if not os.path.exists(dir):
             os.makedirs(dir)
 
-        output_filename = os.path.join(
-            dir, f"{model_name}_{dataset_name}_confusion_matrix.png"
-        )
+        # desar com imatge
+        output_filename = os.path.join(dir, f"{model_name}_{dataset_name}_confusion_matrix.png")
         plt.savefig(output_filename)
         print(f"Matriu de confusió desada a {output_filename}")
 
         if show:
             plt.show()
 
-    def evaluate_model(self, model_name: str, dataset_name: str, labels: list):
+    def evaluate_model(self, model_name: str, dataset_name: str, labels: list) -> None:
         """Avalua un model determinat i l'afegeix a la llista per crear posteriorment el dataset"""
         if model_name not in self._prediccions:
             raise ValueError(f"El model '{model_name}' no es troba en el diccionari.")
@@ -193,15 +151,13 @@ class Models:
         self.do_confusion_matrix(cm, model_name, dataset_name, labels)
 
         # Afegir resultats al registre
-        self._metrics.append(
-            {
-                "Algorisme": model_name,
-                "Dataset": dataset_name,
-                "Accuracy": accuracy,
-                "Precision": precision,
-                "F1-Score": f1,
-            }
-        )
+        self._metrics.append({
+                    "Algorisme": model_name,
+                    "Dataset": dataset_name,
+                    "Accuracy": accuracy,
+                    "Precision": precision,
+                    "F1-Score": f1
+                })
 
         # Generar curva ROC
         try:
@@ -209,20 +165,19 @@ class Models:
         except ValueError as e:
             print(f"Error al generar la curva ROC para {model_name}: {e}")
 
-    def do_plot_metrics(self, metrics_filename, suffix="", show=True):
+    def do_plot_metrics(self, suffix, metrics_filename="metrics.csv", output_dir="plot_metrics", show=False) -> None:
         metrics_df = pd.read_csv(metrics_filename)
         models = metrics_df["Algorisme"]
         metrics = metrics_df[["Accuracy", "Precision", "F1-Score"]]
 
         # Crear el grafic de barres
-        fig, ax = plt.subplots(figsize=(10, 6))
+        fig, ax = plt.subplots(figsize=(15, 6))
         n_models = len(models)
         n_metrics = len(metrics.columns)
 
         # Configrar les posicions de les barres
         bar_width = 0.1
         x = range(n_models)
-
         colors = ["pink", "lightgreen", "lightblue"]  # Colors per cada metrica
 
         # Dibuixem les barres per cada metrica
@@ -251,18 +206,17 @@ class Models:
         plt.tight_layout()
 
         # Crear la carpeta si no existeix i guardar el gràfic
-        output_dir = "plot_metrics"
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        output_path = os.path.join(output_dir, f"metrics_plot{suffix}.png")
-
-        plt.savefig(output_path)
+        output_filename = os.path.join(output_dir, f"metrics_plot_{suffix}.png")
+        plt.savefig(output_filename)
+        print(f"Visualització de mètriques desada a {output_filename}")
 
         if show:
             plt.show()
 
-    def plot_roc_curve(self, model_name: str, dataset_name: str, labels: list):
+    def plot_roc_curve(self, model_name: str, dataset_name: str, labels: list, output_dir = "roc_curves") -> None:
         """Generar la corba ROC per a un model determinat"""
         if model_name not in self._prediccions:
             raise ValueError(f"El model '{model_name}' no es troba en el diccionari.")
@@ -288,9 +242,7 @@ class Models:
         # Dibuixar la corba ROC
         plt.figure()
         for i in range(n_classes):
-            plt.plot(
-                fpr[i], tpr[i], label=f"Classe {labels[i]} (àrea = {roc_auc[i]:.2f})"
-            )
+            plt.plot(fpr[i], tpr[i], label=f"Classe {labels[i]} (àrea = {roc_auc[i]:.2f})")
 
         plt.plot([0, 1], [0, 1], "k--")
         plt.xlim([0.0, 1.0])
@@ -301,12 +253,9 @@ class Models:
         plt.legend(loc="lower right")
 
         # Desar el gràfic
-        output_dir = "roc_curves"
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        output_path = os.path.join(
-            output_dir, f"{model_name}_{dataset_name}_roc_curve.png"
-        )
+        output_path = os.path.join(output_dir, f"{model_name}_{dataset_name}_roc_curve.png")
         plt.savefig(output_path)
         print(f"Corba ROC desada a {output_path}")
