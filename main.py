@@ -171,7 +171,7 @@ def main():
         "Logistic Regression": {
                 "C": [0.1, 1, 10],
                 "penalty": ["l1", "l2"],
-                "solver": ["saga", "liblinear"] #!!!! si no ejecuta eliminar el saga
+                "solver": ["liblinear"] #!!!! si tarda más de 10 minutos en ejecutar con saga
             }
     }
     
