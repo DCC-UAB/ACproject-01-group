@@ -52,16 +52,16 @@ def main():
     data3 = DataPreprocessor()
     data3.preprocess_csv(df_3s)
     data3.split_data()
-    data3.normalize_data()
     data3.plot_features("data3_features.png")
+    data3.normalize_data()
     # data3.remove_noise()   #!!!! provar amb diferents thresholds, per decidir quin es el millor
     print(f"CSV 3s carregat. Train shape: {data3.train_data.shape}, Test shape: {data3.test_data.shape}")
 
     data30 = DataPreprocessor()
     data30.preprocess_csv(df_30s)
     data30.split_data()
-    data30.normalize_data()
     data30.plot_features("data30_features.png")
+    data30.normalize_data()
     # data30.remove_noise()
     print(f"CSV 30s carregat. Train shape: {data30.train_data.shape}, Test shape: {data30.test_data.shape}")
 
@@ -108,7 +108,7 @@ def main():
     metrics30_df = models30.create_metrics_dataframe()
     models30.do_plot_metrics(suffix="_30s")
 
-    print("---\nAMB IMATGES ---")
+    print("\n---AMB IMATGES ---")
 
     modelsIMG = Models(dataIMG.train_data, dataIMG.train_labels, dataIMG.test_data, dataIMG.test_labels)
     dataset_name = "images"
@@ -133,68 +133,71 @@ def main():
         "\n------------------------------ AJUSTAR HIPERPÀREMTRES ---------------------------------"
     )
     PICKLE_DIR = "cache_data"
-    evaluator3 = HyperparameterEvaluator(PICKLE_DIR, data3.train_data, data3.train_labels)
-    evaluator30 = HyperparameterEvaluator(PICKLE_DIR, data30.train_data, data30.train_labels)
-    evaluatorIMG = HyperparameterEvaluator(PICKLE_DIR, dataIMG.train_data, dataIMG.train_labels)
+    
+    datasets = {
+        "data3": {"X": data3.train_data, "labels": data3.train_labels},
+        "data30": {"X": data30.train_data, "labels": data30.train_labels},
+        "dataIMG": {"X": dataIMG.train_data, "labels": dataIMG.train_labels},
+    }
 
-    # Definir hiperparàmetres per a cada model
-    param_grids3 = {
-        "Random Forest": ("RandomForest_df_3s.pkl", {
+    # Definició dels hiperparàmetres de tots els models --> gradient boosting tarda mucho
+    """ TARDA MUCHISIMO
+    "Gradient Boosting": {
+        "learning_rate": [0.5, 1, 5],
+        "n_estimators": [50, 100],
+        "max_depth": [3, 5, 7]
+    },
+    """
+    MODELS_PARAMS = {
+        "Random Forest": {
             "n_estimators": [50, 100],
             "max_depth": [2, 10, 20],
             "min_samples_split": [2, 5]
-        }),
-        # "Gradient Boosting": ("GradientBoosting_df_3s.pkl", {
-        #     "learning_rate": [0.1, 0.2],
-        #     "n_estimators": [50, 100],
-        #     "max_depth": [3, 5]
-        # }),
-        "KNN": ("KNN_df_3s.pkl", {
+        },
+        "KNN": {
             "n_neighbors": [3, 5, 7, 9],
             "weights": ["uniform", "distance"],
             "algorithm": ["auto", "kd_tree"]
-        })
-    }
-
-    param_grids30 = {
-        "Random Forest": ("RandomForest_df_30s.pkl", {
-            "n_estimators": [50, 100],
-            "max_depth": [2, 10, 20],
-            "min_samples_split": [2, 5]
-        }),
-        # "Gradient Boosting": ("GradientBoosting_df_30s.pkl", {
-        #     "learning_rate": [0.1, 0.2],
-        #     "n_estimators": [50, 100],
-        #     "max_depth": [3, 5]
-        # }),
-        "KNN": ("KNN_df_30s.pkl", {
-            "n_neighbors": [3, 5, 7, 9],
-            "weights": ["uniform", "distance"],
-            "algorithm": ["auto", "kd_tree"]
-        })
-    }
-
-    param_gridsIMG = {
-        "Random Forest": ("RandomForest_images.pkl", {
-            "n_estimators": [50, 100],
-            "max_depth": [2, 10, 20],
-            "min_samples_split": [2, 5]
-        }),
-        # "Gradient Boosting": ("GradientBoosting_images.pkl", {
-        #     "learning_rate": [0.1, 0.2],
-        #     "n_estimators": [50, 100],
-        #     "max_depth": [3, 5]
-        # }),
-        "Logistic Regression": ("LogisticRegression_images.pkl", {
+        },
+        "SVM": {
             "C": [0.1, 1, 10],
-            "penalty": ["l1", "l2"],
-            "solver": ["liblinear"]
-        })
+            "kernel": ["linear", "rbf", "poly"],
+            "gamma": [1, 4, 7, 11],
+            "degree": [2, 3]  # per al kernel "poly"
+        },
+        "Gaussian NB": {
+            "var_smoothing": [1e-9, 1e-8, 1e-7]  # control de la suavització
+        },
+        "Logistic Regression": {
+                "C": [0.1, 1, 10],
+                "penalty": ["l1", "l2"],
+                "solver": ["saga", "liblinear"]
+            }
     }
-
-    evaluator3.process_models(param_grids3, search_type="grid")
-    evaluator30.process_models(param_grids30, search_type="grid")
-    evaluatorIMG.process_models(param_gridsIMG, search_type="grid")
+    
+    # models -- datasets amb pickle files
+    param_grids = {
+        "data3": {
+            "Random Forest": ("RandomForest_df_3s.pkl", MODELS_PARAMS["Random Forest"]),
+            "KNN": ("KNN_df_3s.pkl", MODELS_PARAMS["KNN"]),
+            "SVM": ("SVM_df_3s.pkl", MODELS_PARAMS["SVM"])
+        },
+        "data30": {
+            "Random Forest": ("RandomForest_df_30s.pkl", MODELS_PARAMS["Random Forest"]),
+            "KNN": ("KNN_df_30s.pkl", MODELS_PARAMS["KNN"]),
+            "SVM": ("SVM_df_30s.pkl", MODELS_PARAMS["SVM"])
+        },
+        "dataIMG": {
+            "Random Forest": ("RandomForest_images.pkl", MODELS_PARAMS["Random Forest"]),
+            "Gaussian NB": ("GaussianNB_images.pkl", MODELS_PARAMS["Gaussian NB"]),
+            "Logistic Regression": ("LogisticRegression_images.pkl", MODELS_PARAMS["Logistic Regression"]),
+        }
+    }
+    
+    for key, dataset in datasets.items():
+        print(f"\n--- Processant hiperparàmetres per a {key} ---")
+        evaluator = HyperparameterEvaluator(PICKLE_DIR, dataset["X"], dataset["labels"])
+        evaluator.process_models(param_grids[key])
 
 
 if __name__ == "__main__":
