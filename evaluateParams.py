@@ -25,13 +25,10 @@ class HyperparameterEvaluator:
     def evaluate_hyperparameters(self, model: object, param_grid: dict) -> None:
         """
         Avalua i ajusta els hiperparàmetres d'un model donat AMB ELS DOS TIPUS DE CERCA
-        :param model: Model a avaluar.
-        :param param_grid: Diccionari amb els hiperparàmetres a provar.
-        :param search_type: Tipus de cerca: 'grid' o 'random'.
-        :return: Resultats de la millor configuració d'hiperparàmetres.
         """
         tipus = {"GRID": GridSearchCV(estimator=model, param_grid=param_grid, scoring=self._scoring, cv=self._cv, n_jobs=self._n_jobs),
                 "RANDOM": RandomizedSearchCV(estimator=model, param_distributions=param_grid, scoring=self._scoring, cv=self._cv, n_jobs=self._n_jobs)}
+        
         for nom, alg in tipus.items():
             print(f"Ajustant hiperparàmetres amb cerca {nom}")
             alg.fit(self._X_train, self._y_train)
@@ -39,11 +36,9 @@ class HyperparameterEvaluator:
             print(f"Millors hiperparàmetres trobats: {alg.best_params_}")
             print(f"Millor puntuació aconseguida: {alg.best_score_}")
 
-    def process_models(self, models_and_grids) -> None:
+    def process_models(self, models_and_grids: dict) -> None:
         """
-        Processa múltiples models amb els seus respectius param_grid.
-        :param models_and_grids: {nom_model: (pickle_file, param_grid)}.
-        :param search_type: Tipus de cerca: 'grid' o 'random'.
+        Processa múltiples models amb els seus respectius param_grid
         """
         for model_name, (pickle_file, param_grid) in models_and_grids.items():
             print(f"\nProcessant model: {model_name}")
