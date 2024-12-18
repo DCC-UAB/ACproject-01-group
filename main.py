@@ -157,7 +157,7 @@ def main():
         "KNN": {
             "n_neighbors": [3, 5, 7, 9],
             "weights": ["uniform", "distance"],
-            "algorithm": ["auto", "kd_tree"]
+            "algorithm": ["ball_tree", "kd_tree"]
         },
         "SVM": {
             "C": [0.1, 1, 10],
