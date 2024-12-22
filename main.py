@@ -5,26 +5,23 @@ from evaluateParams import HyperparameterEvaluator
 import os
 import pandas as pd
 
-
 def get_models(model: object) -> dict:
     return {
         "KNN": model.do_knn,
         "SVM": model.do_svm,
         "Decision Tree": model.do_decision_tree,
         "Random Forest": model.do_random_forest,
-        "Gradient Boosting": model.do_gradient_boosting, #! --> LO COMENTO PARA LAS IMAGES PQ TARDA MUCHO
+        "Gradient Boosting": model.do_gradient_boosting,
         "Logistic Regression": model.do_logistic_regression,
         "Gaussian NB": model.do_gaussian_naive_bayes,
         "Bernoulli NB": model.do_bernoulli_naive_bayes,
         "Multinomial NB": model.do_multinomial_nb,
     }
 
-
 def main():
     PATH_CSV3 = r"data/features_3_sec.csv"
     PATH_CSV30 = r"data/features_30_sec.csv"
     PATH_IMAGES = r"data/images_original"
-    PATH_AUDIOS = r"data/genres_original"
 
     print(
         "----------------------------- CARREGAR DADES ---------------------------------"
@@ -54,7 +51,7 @@ def main():
     data3.split_data()
     data3.plot_features("data3_features.png")
     data3.normalize_data()
-    # data3.remove_noise()   #!!!! provar amb diferents thresholds, per decidir quin es el millor
+    # data3.remove_noise()  
     print(f"CSV 3s carregat. Train shape: {data3.train_data.shape}, Test shape: {data3.test_data.shape}")
 
     data30 = DataPreprocessor()
@@ -171,7 +168,7 @@ def main():
         "Logistic Regression": {
                 "C": [0.1, 1, 10],
                 "penalty": ["l1", "l2"],
-                "solver": ["liblinear"] #!!!! si tarda más de 10 minutos en ejecutar con saga
+                "solver": ["liblinear"] #!! saga tarda demasiaaaado
             }
     }
     

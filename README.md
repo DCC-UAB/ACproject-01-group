@@ -2,10 +2,12 @@
 [![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=17281558&assignment_repo_type=AssignmentRepo)
 
 
-Utilitzar Espectrograma (utilitzar la llibreria Librosa), manera de representar la musica en una imatge. Conté frequencies per identificar els sons. Mirar si la informacio ens dona alguna pista del tipus de musica, fer BoW
+## REQUERIMENTS:
+S'ha de tenir instal·lada la versió de **scikit-learn 1.2.2**, per tal de que a l'utilitzar pickle funcioni correctament `pip install scikit-learn==1.2.2`. 
 
-## REQUIREMENTS:
-S'ha de tenir instal·lada la versió de **scikit-learn 1.2.2**, per tal de que a l'utilitzar pickle funcioni correctament `pip install scikit-learn==1.2.2`
+En cas de que no s'executi el codi, eliminar la carpeta `cache_data`
+
+#### Informe en format WORD: [Link](https://uab-my.sharepoint.com/:w:/g/personal/1676127_uab_cat/EQvdAmtagStBhT3t3cj3P90BgCTMzeLgmD-6dvd-G0Ak7w?e=DOgrze)
 
 ## TO DO SETMANA 1:
 - Carregar les dades ✅
@@ -20,9 +22,6 @@ S'ha de tenir instal·lada la versió de **scikit-learn 1.2.2**, per tal de que 
 **Com eliminem el soroll?**
 
 **Alternatives al codi implementat**
-
-A l'hora de normalitzar les dades és podia haber implementat `from sklearn.preprocessing import Normalizer`
-
 
 
 ## TO DO SETMANA 2/3:
@@ -49,10 +48,10 @@ A l'hora de normalitzar les dades és podia haber implementat `from sklearn.prep
 **Avaluació de Rendiment**
 
 **Quin csv és millor que l'altre, per què?**
-....
+
 
 ## TO DO SETMANA 4:
 - Implementació de models amb imatges ✅
 - Visualitzar ROC-Curve ✅
 - Jugar amb hiperparàmetres dels top3 millors models de cada "tipus" ✅
-- Finalitzar l'informe
+- Finalitzar l'informe ✅

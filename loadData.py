@@ -18,6 +18,8 @@ import numpy as np
 class DataLoader:
     def __init__(self, cache_dir="cache_data"):
         self.cache_dir = cache_dir
+        # Crear la carpeta si no existeix
+        os.makedirs(self.cache_dir, exist_ok=True)
 
     def load_csv(self, csv_path:str) -> pd.DataFrame:
         """

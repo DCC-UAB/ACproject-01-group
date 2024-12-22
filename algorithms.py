@@ -197,9 +197,10 @@ class Models:
         ax.set_xticks([pos + bar_width * (n_metrics - 1) / 2 for pos in x])
         ax.set_xticklabels(models)
 
-        ax.set_title("Comparació de Metriques dels Models", fontsize=16)
+        ax.set_title(f"Comparació de Metriques dels Models {suffix}", fontsize=16)
         ax.set_xlabel("Models", fontsize=14)
         ax.set_ylabel("Valor de Metriques", fontsize=14)
+        ax.set_ylim(0,1) #!!! definim el rang 
         ax.legend(title="Metriques", fontsize=12)
         ax.grid(axis="y", linestyle="--", alpha=0.7)
 
@@ -209,7 +210,7 @@ class Models:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        output_filename = os.path.join(output_dir, f"metrics_plot_{suffix}.png")
+        output_filename = os.path.join(output_dir, f"metrics_plot{suffix}.png")
         plt.savefig(output_filename)
         print(f"Visualització de mètriques desada a {output_filename}")
 
